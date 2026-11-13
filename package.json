@@ -1,6 +1,6 @@
 {
   "name": "qairu-space",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "license": "MIT",
   "scripts": {"build": "node scripts/build-theme.cjs && node scripts/build.cjs", "test": "node --test tests/*.cjs tests/*.mjs"},

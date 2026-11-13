@@ -61,8 +61,8 @@ export async function routeGrades(request,env,now=Date.now()){
    if(member&&member.last_seen<=now-TTL){await remove(env,token,now);throw error('Запись удалена после 90 дней неактивности.',410);}
    if(path.endsWith('/results')&&method==='GET'){
     if(!member)throw error('Вы ещё не участвуете.',404);
-    const rows=await all(env,`SELECT m.metric_key,r.result,s.published FROM grades_metrics m JOIN grades_results r ON r.scope=m.scope AND r.token=m.token AND r.fingerprint=m.fingerprint JOIN grades_snapshots s ON s.scope=m.scope JOIN grades_members a ON a.token=m.token WHERE m.token=? AND s.valid=1 AND a.last_seen>? AND NOT EXISTS(SELECT 1 FROM grades_metrics expired JOIN grades_members e ON e.token=expired.token WHERE expired.scope=m.scope AND e.last_seen<=?)`,token,now-TTL,now-TTL);
-    return json({period:member.period,results:rows.map(r=>({key:r.metric_key,range:JSON.parse(r.result),published:r.published})),verified:false});
+    const rows=await all(env,`SELECT m.metric_key,r.fingerprint,r.result,s.published FROM grades_metrics m JOIN grades_results r ON r.scope=m.scope AND r.token=m.token AND r.fingerprint=m.fingerprint JOIN grades_snapshots s ON s.scope=m.scope JOIN grades_members a ON a.token=m.token WHERE m.token=? AND s.valid=1 AND a.last_seen>? AND NOT EXISTS(SELECT 1 FROM grades_metrics expired JOIN grades_members e ON e.token=expired.token WHERE expired.scope=m.scope AND e.last_seen<=?)`,token,now-TTL,now-TTL);
+    return json({period:member.period,results:rows.map(r=>({key:r.metric_key,fingerprint:r.fingerprint,range:JSON.parse(r.result),published:r.published})),verified:false});
    }
    if(path.endsWith('/member')&&method==='GET'){
     if(!member)throw error('Вы ещё не участвуете.',404);
@@ -86,7 +86,7 @@ export async function routeGrades(request,env,now=Date.now()){
     add(`INSERT OR IGNORE INTO grades_changes(scope,token) SELECT json_extract(j.value,'$.scope'),? FROM json_each(?) j WHERE NOT EXISTS(SELECT 1 FROM grades_metrics m WHERE m.token=? AND m.scope=json_extract(j.value,'$.scope') AND m.fingerprint=json_extract(j.value,'$.fingerprint')) AND $guard`,token,data,token);
     add('DELETE FROM grades_metrics WHERE token=? AND $guard',token);
     add(`INSERT INTO grades_metrics(token,scope,metric_key,fingerprint,value,exact) SELECT ?,json_extract(value,'$.scope'),json_extract(value,'$.key'),json_extract(value,'$.fingerprint'),json_extract(value,'$.value'),json_extract(value,'$.exact') FROM json_each(?) WHERE $guard`,token,data);
-    add(`INSERT INTO grades_members(token,revision,period,digest,mutation,last_seen,last_changed) SELECT ?,?,?,?,?,?,? WHERE $guard ON CONFLICT(token) DO UPDATE SET revision=excluded.revision,period=excluded.period,digest=excluded.digest,mutation=excluded.mutation,last_seen=excluded.last_seen,last_changed=excluded.last_changed`,token,revision,normalized.period,digest,b.mutation,now,member?.digest===digest?member.last_changed:now);
+    add(`INSERT INTO grades_members(token,revision,period,digest,mutation,consent,last_seen,last_changed) SELECT ?,?,?,?,?,?,?,? WHERE $guard ON CONFLICT(token) DO UPDATE SET revision=excluded.revision,period=excluded.period,digest=excluded.digest,mutation=excluded.mutation,consent=excluded.consent,last_seen=excluded.last_seen,last_changed=excluded.last_changed`,token,revision,normalized.period,digest,b.mutation,G.consentVersion,now,member?.digest===digest?member.last_changed:now);
    }))return json({revision,digest});
   }throw error('Конфликт обновлений. Повторите позже.',409);
  }catch(e){return json({error:e.status?e.message:'Сравнение временно недоступно.'},e.status||503);}

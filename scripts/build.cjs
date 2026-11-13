@@ -15,6 +15,7 @@ for(const target of ['firefox','chromium']){
   const write=(f,s)=>fs.writeFileSync(path.join(out,f),s);
   write('popup.html',fs.readFileSync(path.join(out,'popup.html'),'utf8').replace('<script src="settings.js">','<script src="vendor/browser-polyfill.js"></script><script src="settings.js">'));
   if(fs.existsSync(path.join(out,'ranking-account.html')))write('ranking-account.html',fs.readFileSync(path.join(out,'ranking-account.html'),'utf8').replace('<script src="ranking-account.js">','<script src="vendor/browser-polyfill.js"></script><script src="ranking-account.js">'));
+  if(fs.existsSync(path.join(out,'grades-account.html')))write('grades-account.html',fs.readFileSync(path.join(out,'grades-account.html'),'utf8').replace('<script src="grades-account.js">','<script src="vendor/browser-polyfill.js"></script><script src="grades-account.js">'));
   write('system-theme-content.js',"browser.runtime.onMessage.addListener(m=>m?.type==='campus:system-theme'?Promise.resolve({dark:matchMedia('(prefers-color-scheme: dark)').matches}):undefined);\n");
   write('system-theme-worker.js',`globalThis.CampusSystemTheme=async()=>{const tabs=await browser.tabs.query({url:'https://campus.qairu.edu.kz/*'});tabs.sort((a,b)=>Number(b.active)-Number(a.active));for(const t of tabs){try{const r=await browser.tabs.sendMessage(t.id,{type:'campus:system-theme'},{frameId:0});if(typeof r?.dark==='boolean')return r.dark}catch{}}return false};\n`);
   const bg=fs.readFileSync(path.join(out,'background.js'),'utf8'),expression="matchMedia('(prefers-color-scheme: dark)').matches";

@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Qairu Space",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "author": "wateroff, airsmooth",
-  "description": "Тема Lunatica, экзамены в расписании, дедлайны, заметки и добровольный рейтинг XP для кампуса QAIRU.",
+  "description": "Тема Lunatica, экзамены, дедлайны, заметки, добровольный рейтинг XP и приватное сравнение оценок QAIRU.",
   "permissions": [
     "storage"
   ],
@@ -19,7 +19,11 @@
         "required": [
           "none"
         ],
-        "optional": ["websiteContent", "authenticationInfo", "personallyIdentifyingInfo"]
+        "optional": [
+          "websiteContent",
+          "authenticationInfo",
+          "personallyIdentifyingInfo"
+        ]
       }
     }
   },
@@ -42,6 +46,8 @@
       "schedule-history.js",
       "xp.js",
       "ranking-background.js",
+      "grades-model.js",
+      "grades-background.js",
       "background.js"
     ]
   },
@@ -78,12 +84,17 @@
         "backup-ui.js",
         "site-settings.js",
         "ranking-ui.js",
+        "grades-model.js",
+        "grades-source.js",
+        "grades-collector.js",
+        "grades-ui.js",
         "site-panel.js",
         "schedule-exams.js"
       ],
       "css": [
         "comfort.css",
-        "schedule-exams.css"
+        "schedule-exams.css",
+        "grades-ui.css"
       ],
       "run_at": "document_start",
       "all_frames": true

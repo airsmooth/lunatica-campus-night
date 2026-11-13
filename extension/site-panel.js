@@ -8,8 +8,8 @@
     <section class="shell" aria-label="Qairu Space — учебная панель">
       <header><h2>Учебная сводка</h2><button id="panel-toggle" aria-expanded="true" aria-controls="panel-content">Свернуть</button></header>
       <div id="panel-content">
-        <nav class="tabs" aria-label="Разделы учебной панели"><button data-panel="today" aria-pressed="true">Обзор</button><button data-panel="exams" aria-pressed="false">Экзамены</button><button data-panel="ranking" aria-pressed="false">Рейтинг XP</button><button data-panel="search" aria-pressed="false">Поиск</button><button data-panel="appearance" aria-pressed="false">Настройки</button></nav>
-        <section id="today" class="panel">
+        <nav class="tabs" aria-label="Разделы учебной панели"><button data-panel="today" aria-pressed="true">Обзор</button><button data-panel="exams" aria-pressed="false">Экзамены</button><button data-panel="ranking" aria-pressed="false">Рейтинг XP</button><button data-panel="grades" aria-pressed="false">Оценки</button><button data-panel="search" aria-pressed="false">Поиск</button><button data-panel="appearance" aria-pressed="false">Настройки</button></nav>
+        <section id="grades" class="panel" hidden><h3>Сравнение оценок · бета</h3><p>Свой диапазон мест рядом с оценками и GPA в кампусе. Только по отдельному согласию; чужие оценки скрыты. Нужно не менее 20 участников с тем же показателем.</p><div class="section-head"><a href="https://campus.qairu.edu.kz/ru/grades">Открыть оценки</a><button id="grades-manage" type="button">Участие и приватность</button></div><p id="grades-status" role="status"></p></section><section id="today" class="panel">
           <div class="overview">
             <section class="column"><div class="section-head"><h3>Ближайшая пара</h3><button id="refresh">Обновить</button></div><div id="next-class" class="feature-card"><p>Загружаю расписание…</p></div></section>
             <section class="column"><div class="section-head"><h3>Дедлайны</h3><select id="deadline-filter" aria-label="Период дедлайнов"><option value="week">7 дней</option><option value="today">Сегодня</option><option value="all">Все</option></select></div><div id="deadlines" class="scroll-list"></div></section>
@@ -77,6 +77,7 @@
     target.prepend(host);
     settingsUI=globalThis.CampusSiteSettings?.mount({root,request:CampusService.request});
     rankingUI=globalThis.CampusRanking?.mount({root});
+    root.querySelector('#grades-manage').onclick=async()=>{try{const r=await browser.runtime.sendMessage({type:'space:grades',action:'open'});if(r?.error)throw Error(r.error);}catch(e){root.querySelector('#grades-status').textContent=e.message;}};
     dashboard=CampusDashboard.mount({root,request:CampusService.request,autoLoad:false,isActive:active});
     examUI=CampusExamUI.mount({root,request:CampusService.request});
     root.querySelector('#panel-toggle').addEventListener('click',async()=>{

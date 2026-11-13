@@ -25,6 +25,7 @@ test('private results require 20, daily cadence and five distinct changes; exact
 test('CAS, idempotency and deletion tombstone prevent lost-response duplication and resurrection',async()=>{
  const e=setup(),mutation=crypto.randomUUID();assert.equal((await put(e,1,80,0,start,'2026-2027~1',mutation)).status,200);
  assert.equal((await put(e,1,80,0,start,'2026-2027~1',mutation)).status,200);
+ assert.equal(e.db.prepare('SELECT consent FROM grades_members').get().consent,'grades-2026-11-v1');
  assert.equal((await put(e,1,81,0,start,'2026-2027~1',mutation)).status,409);
  assert.equal((await put(e,1,81,0)).status,409);
  assert.equal((await req(e,'DELETE')).status,200);assert.equal((await req(e,'DELETE')).status,200);

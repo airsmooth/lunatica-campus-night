@@ -1,7 +1,7 @@
 -- Additive, isolated from the public XP tables.
 CREATE TABLE IF NOT EXISTS grades_state(id INTEGER PRIMARY KEY CHECK(id=1),generation INTEGER NOT NULL,nonce TEXT NOT NULL);
 INSERT OR IGNORE INTO grades_state VALUES(1,0,'');
-CREATE TABLE IF NOT EXISTS grades_members(token TEXT PRIMARY KEY,revision INTEGER NOT NULL,period TEXT NOT NULL,digest TEXT NOT NULL,mutation TEXT NOT NULL,last_seen INTEGER NOT NULL,last_changed INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS grades_members(token TEXT PRIMARY KEY,revision INTEGER NOT NULL,period TEXT NOT NULL,digest TEXT NOT NULL,mutation TEXT NOT NULL,consent TEXT NOT NULL,last_seen INTEGER NOT NULL,last_changed INTEGER NOT NULL);
 CREATE INDEX IF NOT EXISTS grades_seen ON grades_members(last_seen);
 CREATE TABLE IF NOT EXISTS grades_metrics(token TEXT NOT NULL,scope TEXT NOT NULL,metric_key TEXT NOT NULL,fingerprint TEXT NOT NULL,value REAL NOT NULL,exact TEXT NOT NULL,PRIMARY KEY(token,scope));
 CREATE INDEX IF NOT EXISTS grades_scope ON grades_metrics(scope);

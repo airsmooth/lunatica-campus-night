@@ -34,7 +34,7 @@ globalThis.CampusGradesClient=(()=>{
    const hash=await digest(read.snapshot);
    // Resolve an uncertain response before another write. Never blindly replay a stale snapshot.
    if(state.status==='pending'){
-    try{const remote=await api('GET','member');if(remote.digest===hash&&remote.period===read.snapshot.period){state.revision=remote.revision;state.digest=hash;state.period=remote.period;state.status='active';state.lastSuccess=now();state.pending=null;await save();return publicState();}if(remote.revision!==state.revision)throw Error('Запись изменена в другом браузере. Приостановите и подтвердите возобновление.');}
+    try{const remote=await api('GET','member');if(startEpoch!==epoch)return publicState();if(remote.digest===hash&&remote.period===read.snapshot.period){state.revision=remote.revision;state.digest=hash;state.period=remote.period;state.status='active';state.lastSuccess=now();state.error=null;state.pending=null;await save();return publicState();}if(remote.revision!==state.revision)throw Error('Запись изменена в другом браузере. Приостановите и подтвердите возобновление.');}
     catch(e){if(e.status!==404)throw e;}
    }
    if(startEpoch!==epoch)throw Error('Обновление остановлено.');
