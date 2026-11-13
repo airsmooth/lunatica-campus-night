@@ -1,0 +1,37 @@
+const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
+const base='extension/',ctx=vm.createContext({URL,TextEncoder,Date,console});
+for(const file of ['settings.js','campus-data.js','exam-data.js','exam-sessions.js','preferences.js','calendar.js'])if(fs.existsSync(base+file))vm.runInContext(fs.readFileSync(base+file,'utf8'),ctx);
+const S=ctx.CampusSessions;assert.equal(typeof S?.parse,'function','new verified exam session import required');
+const row={subject:'new-course',title:'New Course',stream:8,language:'en',groups:[2],date:'2027-01-20',time:'09:00–10:40',room:'300',page:1,format:'Письменный экзамен',note:''};
+const file={format:'campus-night-exams',version:1,title:'Зимняя сессия 2027',sourceTitle:'Расписание экзаменов январь 2027',sourcePath:'/api/storage/new-session-2027',sha256:'a'.repeat(64),rows:[row]};
+const session=S.parse(JSON.stringify(file)),engine=S.engine(session);assert.equal(engine.sourcePath,file.sourcePath);
+const course={url:'https://campus.qairu.edu.kz/ru/courses/new',title:'New Course',stream:8,group:2,examHash:file.sha256};
+const matched=engine.match(course,[]);assert.equal(matched.matches.length,1);assert.equal(matched.matches[0].room,'300');
+assert.equal(engine.match({...course,group:3},[]).matches.length,0);
+const P=ctx.CampusPreferences;assert.notEqual(P.choiceKey(course),P.choiceKey({...course,examHash:'b'.repeat(64)}),'manual language scoped to selected PDF');
+const stamp=Date.parse('2027-01-19T10:00:00Z'),data={session,source:ctx.CampusData.origin+session.sourcePath,verifiedAt:stamp,courses:[matched]};
+const events=ctx.CampusCalendar.events(data,{},stamp);assert.equal(events[0].start,Date.parse('2027-01-20T09:00:00+05:00'));assert.match(events[0].url,/new-session-2027/);
+const alternatives=S.parse(JSON.stringify({...file,rows:[{...row,possibleTimes:['11:00–12:00; 13:00–14:00']}]}));assert.equal(alternatives.rows[0].possibleTimes.length,2,'alternative time lists flatten into individual ranges');
+assert.equal(ctx.CampusCalendar.events({...data,session:alternatives,courses:[S.engine(alternatives).match(course,[])]},{},stamp).length,3);
+for(const patch of [{sourcePath:'https://evil.example/a'},{sourcePath:'/ru/logout'},{sha256:'bad'},{rows:[{...row,date:'2027-02-30'}]},{rows:[{...row,time:'23:00–22:00'}]},{rows:[{...row,groups:[]}]},{rows:[{...row,language:'xx'}]}])assert.throws(()=>S.parse(JSON.stringify({...file,...patch})));
+assert.throws(()=>S.parse(' '.repeat(524289)));
+assert.equal(S.documentMatches(session,{title:'Расписание экзаменов январь 2027 (исправлено)'}),true);
+assert.equal(S.documentMatches(session,{title:'Расписание экзаменов ноябрь 2026'}),false);
+assert.equal(S.engine(null).sha256,ctx.CampusExams.sha256,'bundled table remains default');
+console.log('PASS exam sessions: validated local tables, new session matching, PDF-bound language choices, ICS, invalid date/time/path/group rejection and bundled fallback.');
+(async()=>{
+ const {JSDOM}=require('jsdom'),{webcrypto,createHash}=require('node:crypto');
+ const d=new JSDOM('<h1>Campus</h1>',{url:ctx.CampusData.origin+'/ru',runScripts:'outside-only'}),w=d.window;
+ const bytes=Buffer.from('synthetic exam PDF fixture'),custom={...file,sha256:createHash('sha256').update(bytes).digest('hex')};let handler,changed=false,duplicate=false;
+ Object.defineProperty(w,'crypto',{value:webcrypto});w.AbortSignal=AbortSignal;w.TextEncoder=TextEncoder;
+ w.browser={storage:{local:{get:async()=>({campusExamSession:custom})},onChanged:{addListener(){}}},runtime:{onMessage:{addListener:fn=>handler=fn}}};
+ w.fetch=async url=>{
+   const path=new URL(url).pathname;if(path===custom.sourcePath)return {ok:true,arrayBuffer:async()=>Uint8Array.from(changed?Buffer.from('changed'):bytes).buffer};
+   const pages={'/ru/documents':`<h1>Документы</h1><a aria-label="${custom.sourceTitle}" href="${custom.sourcePath}">PDF</a>`+(duplicate?`<a aria-label="${custom.sourceTitle} исправлено" href="/api/storage/another">PDF</a>`:''),'/ru/courses':`<h1>Курсы</h1><article><a href="/ru/courses/new"><h3>New Course</h3></a></article>`,'/ru/courses/new':'<h1>New Course</h1><p class="cmp-cd-head__meta">Поток 8 Группа — Практика 2</p>','/ru/schedule':'<h1>Расписание</h1>'};
+   assert.ok(pages[path],'known campus endpoint '+path);return {ok:true,text:async()=>pages[path]};
+ };
+ for(const f of ['campus-data.js','exam-data.js','exam-sessions.js','dashboard-content.js'])w.eval(fs.readFileSync(base+f,'utf8'));
+ const result=await handler({type:'campus:exams'});assert.equal(result.value?.courses[0].matches[0].date,'2027-01-20');assert.equal(result.value.courses[0].examHash,custom.sha256);
+ changed=true;assert.match((await handler({type:'campus:exams'})).error,/изменил PDF/);changed=false;duplicate=true;assert.match((await handler({type:'campus:exams'})).error,/несколько версий/);
+ w.close();console.log('PASS custom-session collector: published document discovery, byte hash verification, course/group matching and changed/duplicate source rejection.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

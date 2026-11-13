@@ -1,0 +1,37 @@
+const fs=require('fs'),assert=require('assert/strict');
+const {JSDOM}=require('jsdom');
+const source=file=>fs.readFileSync('extension/'+file,'utf8');
+const tick=()=>new Promise(resolve=>setImmediate(resolve));
+(async()=>{
+  const d=new JSDOM(source('popup.html'),{url:'https://campus.qairu.edu.kz/ru',runScripts:'outside-only'}),w=d.window;
+  const state={campusNight:{mode:'off',scale:125},campusFavorites:[{title:'Existing',url:'https://campus.qairu.edu.kz/ru/courses/existing'}],unrelated:{keep:true},academicCache:'must not export'};
+  const listeners=new Set();let handler,writes=0,fail=false,saved;
+  w.TextEncoder=TextEncoder;
+  const local={get:async keys=>Object.fromEntries((Array.isArray(keys)?keys:[keys]).map(k=>[k,structuredClone(state[k])])),set:async data=>{if(fail)throw Error('Storage unavailable');writes++;Object.assign(state,structuredClone(data));listeners.forEach(fn=>fn(Object.fromEntries(Object.entries(data).map(([k,v])=>[k,{newValue:structuredClone(v)}])),'local'));}};
+  w.browser={commands:{onCommand:{addListener(){}}},runtime:{onMessage:{addListener:fn=>handler=fn},sendMessage:msg=>handler(msg)},storage:{local,onChanged:{addListener:fn=>listeners.add(fn),removeListener:fn=>listeners.delete(fn)}}};
+  for(const f of ['settings.js','campus-data.js','exam-data.js','preferences.js','background.js'])w.eval(source(f));
+  const P=w.CampusPreferences,c1={url:'https://campus.qairu.edu.kz/ru/courses/one',stream:2,group:3},c2={...c1,url:'https://campus.qairu.edu.kz/ru/courses/two'};
+  const a=P.watch(()=>{}),b=P.watch(()=>{});await Promise.all([a.ready,b.ready]);
+  await Promise.all([a.set(c1,'en'),b.set(c2,'kk')]);assert.equal(a.get(c1),'en');assert.equal(a.get(c2),'kk');assert.equal(b.get(c1),'en');assert.equal(Object.keys(state.campusExamChoices).length,2);
+  const fresh=P.watch(()=>{});await fresh.ready;assert.equal(fresh.get(c2),'kk');assert.equal(fresh.get({...c2,group:4}),null);
+  await a.set(c1,'');assert.equal(b.get(c1),null);assert.equal(fresh.get(c2),'kk');
+  // A delayed response must not overwrite a newer storage notification.
+  const send=w.browser.runtime.sendMessage;let resolveReply;w.browser.runtime.sendMessage=()=>new Promise(resolve=>resolveReply=resolve);
+  const delayed=a.set(c1,'en');await tick();const old={...state.campusExamChoices,[P.choiceKey(c1)]:'en'};
+  await local.set({campusExamChoices:{...old,[P.choiceKey(c1)]:'kk'}});resolveReply({choices:old});await delayed;assert.equal(a.get(c1),'kk');w.browser.runtime.sendMessage=send;
+  w.CampusFiles={save:(...args)=>saved=args};w.eval(source('backup-ui.js'));
+  const q=s=>w.document.querySelector(s),file=q('#backup-file'),select=async content=>{Object.defineProperty(file,'files',{configurable:true,value:[{size:Buffer.byteLength(content),text:async()=>content}]});file.dispatchEvent(new w.Event('change'));await tick();await tick();};
+  q('#backup-export').click();await tick();const exported=JSON.parse(saved[0]);assert.equal(exported.data.unrelated,undefined);assert.equal(exported.data.academicCache,undefined);assert.equal(saved[1],'campus-night-settings.json');
+  const incoming=P.backup({campusNight:{mode:'dark',scale:140},campusFavorites:[{title:'Imported',url:c1.url}],campusPanel:{collapsed:true},campusExamGrid:{enabled:false},campusExamChoices:{[P.choiceKey(c2)]:'en'}});
+  const before=writes;await select(JSON.stringify(incoming));assert.equal(q('#backup-preview').hidden,false);assert.equal(writes,before);assert.match(q('#backup-summary').textContent,/140%/);
+  q('#backup-cancel').click();assert.equal(q('#backup-preview').hidden,true);assert.equal(writes,before);assert.equal(state.campusNight.mode,'off');
+  await select(JSON.stringify(incoming));
+  await send({type:'campus:favorite-change',change:{add:{title:'Added while preview open',url:'https://campus.qairu.edu.kz/ru/schedule'}}});
+  q('#backup-apply').click();await tick();await tick();assert.equal(state.campusNight.mode,'dark');assert.equal(state.campusNight.scale,140);assert.equal(state.campusFavorites.length,3);assert.equal(state.unrelated.keep,true);assert.equal(state.campusExamGrid.enabled,false);assert.equal(b.get(c2),'en');assert.equal(b.get(c1),'kk');assert.match(q('#backup-status').textContent,/Настройки перенесены/);
+  const snapshot=JSON.stringify(state);await select('{bad');assert.equal(q('#backup-preview').hidden,true);assert.equal(JSON.stringify(state),snapshot);
+  await select(' '.repeat(P.backupLimit+1));assert.match(q('#backup-status').textContent,/1 МБ/);assert.equal(JSON.stringify(state),snapshot);
+  await select(JSON.stringify({...incoming,data:{...incoming.data,campusFavorites:[{title:'Bad',url:'https://evil.example/'}]}}));assert.equal(q('#backup-preview').hidden,true);assert.equal(JSON.stringify(state),snapshot);
+  await select(JSON.stringify(incoming));fail=true;q('#backup-apply').click();await tick();await tick();assert.match(q('#backup-status').textContent,/Storage unavailable/);assert.equal(q('#backup-preview').hidden,false);assert.equal(q('#backup-apply').disabled,false);assert.equal(JSON.stringify(state),snapshot);
+  a.destroy();b.destroy();fresh.destroy();assert.equal(listeners.size,0);d.window.close();
+  console.log('PASS transfer: concurrent language choices, cross-panel updates, reload, group isolation, stale response protection, local backup, preview/cancel, live favorites merge, invalid files, storage failure and subscription cleanup.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

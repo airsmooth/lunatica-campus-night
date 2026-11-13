@@ -1,0 +1,19 @@
+/* Attributes belong only to this extension. Removing them restores site defaults. */
+html[data-cn-scale="110"] { zoom: 1.1; }
+html[data-cn-scale="125"] { zoom: 1.25; }
+html[data-cn-scale="140"] { zoom: 1.4; }
+html[data-cn-motion] *, html[data-cn-motion] *::before, html[data-cn-motion] *::after {
+  animation-duration: .01ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
+  scroll-behavior: auto !important;
+}
+html[data-cn-wide] .cmp-content { max-width: none !important; width: 100% !important; }
+html[data-cn-wide] .adm-shell__content { padding-left: 12px !important; padding-right: 12px !important; }
+html[data-cn-hide-ai] :is(.a4-dock, .cmp-promo-btn) { display: none !important; }
+html[data-cn-hide-ai] .adm-shell--desk { --a4-dock-w: 0px; }
+html[data-cn-dark="true"] :focus-visible { outline-color: #84bddd; }
+@media print {
+  html[data-cn-scale] { zoom: 1; }
+}

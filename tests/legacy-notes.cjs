@@ -1,0 +1,25 @@
+const fs=require('fs'),assert=require('node:assert/strict'),{JSDOM}=require('jsdom');
+const base='extension/';
+(async()=>{
+ const d=new JSDOM('',{url:'https://campus.qairu.edu.kz/ru',runScripts:'outside-only'}),w=d.window;
+ const state={campusNight:{mode:'off',scale:125},campusFavorites:[]};let handler;
+ w.TextEncoder=TextEncoder;w.browser={commands:{onCommand:{addListener(){}}},runtime:{onMessage:{addListener:fn=>handler=fn}},storage:{local:{get:async keys=>Object.fromEntries((Array.isArray(keys)?keys:[keys]).map(k=>[k,state[k]])),set:async value=>Object.assign(state,value)}}};
+ for(const file of ['settings.js','campus-data.js','exam-data.js','preferences.js','background.js'])w.eval(fs.readFileSync(base+file,'utf8'));
+ const P=w.CampusPreferences;assert.equal(typeof P.taskNotes,'function','personal task marks need validated storage');
+ const url='https://campus.qairu.edu.kz/ru/assignments/test';
+ await Promise.all(['a','b'].map(id=>handler({type:'campus:task-note',url:url+id,value:{status:'working',note:'Draft '+id}})));
+ assert.equal(Object.keys(state.campusTaskNotes).length,2,'concurrent task edits preserved');
+ await handler({type:'campus:task-note',url:url+'a',value:{status:'ready',note:'Still must submit'}});assert.equal(state.campusTaskNotes[url+'a'].status,'ready');
+ assert.match((await handler({type:'campus:task-note',url:'https://evil.example/x',value:{status:'ready',note:''}})).error,/задан/);
+ assert.match((await handler({type:'campus:task-note',url,value:{status:'submitted',note:''}})).error,/отмет/,'official submission is not a personal status');
+ assert.match((await handler({type:'campus:task-note',url,value:{status:'ready',note:'x'.repeat(501)}})).error,/500/);
+ await handler({type:'campus:task-note',url:url+'a',value:null});assert.equal(state.campusTaskNotes[url+'a'],undefined);
+ const backup=P.backup(state);assert.equal(backup.version,2);assert.equal(backup.data.campusTaskNotes[url+'b'].note,'Draft b');
+ const parsed=P.parse(JSON.stringify(backup));assert.equal(parsed.campusTaskNotes[url+'b'].status,'working');
+ assert.equal(P.parse(JSON.stringify({...backup,version:1,data:{campusNight:backup.data.campusNight,campusFavorites:[]}})).campusTaskNotes,undefined,'v1 imports preserve existing notes');
+ const merged=P.mergeImport({...state,campusTaskNotes:{[url]:{status:'todo',note:'Existing'}}},parsed);assert.equal(Object.keys(merged.campusTaskNotes).length,2);
+ assert.throws(()=>P.parse(JSON.stringify({...backup,data:{...backup.data,campusTaskNotes:{[url]:{status:'submitted',note:''}}}})));
+ const fullNotes=Object.fromEntries(Array.from({length:200},(_,i)=>[url+i,{status:'todo',note:'文'.repeat(500)}]));
+ assert.equal(Object.keys(P.parse(JSON.stringify(P.backup({...state,campusTaskNotes:fullNotes}))).campusTaskNotes).length,200,'a valid full notes collection round-trips through backup');
+ w.close();console.log('PASS task notes: concurrent writes, local status validation, limits, removal and v1/v2 backup merge.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

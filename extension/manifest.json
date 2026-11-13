@@ -1,0 +1,86 @@
+{
+  "manifest_version": 3,
+  "name": "Qairu Space",
+  "version": "2.0.0",
+  "author": "wateroff, airsmooth",
+  "description": "Тёмная тема, ближайшая пара, дедлайны, избранное и экзамены для campus.qairu.edu.kz. Неофициальное расширение.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://campus.qairu.edu.kz/*"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "campus-night@local.qairu-tools",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  },
+  "icons": {
+    "48": "icon.svg",
+    "96": "icon.svg"
+  },
+  "action": {
+    "default_title": "Campus Night",
+    "default_popup": "popup.html",
+    "default_icon": "icon.svg"
+  },
+  "background": {
+    "scripts": [
+      "settings.js",
+      "campus-data.js",
+      "exam-data.js",
+      "exam-sessions.js",
+      "preferences.js",
+      "schedule-history.js",
+      "background.js"
+    ]
+  },
+  "commands": {
+    "toggle-theme": {
+      "suggested_key": {
+        "default": "Alt+Shift+D"
+      },
+      "description": "Включить или выключить тёмную тему кампуса"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://campus.qairu.edu.kz/*"
+      ],
+      "js": [
+        "settings.js",
+        "lunatica-theme.js",
+        "content.js",
+        "campus-data.js",
+        "exam-data.js",
+        "exam-sessions.js",
+        "dashboard-content.js",
+        "dashboard.js",
+        "preferences.js",
+        "task-notes-ui.js",
+        "calendar.js",
+        "file-download.js",
+        "session-ui.js",
+        "exams.js",
+        "popup.js",
+        "backup-ui.js",
+        "site-settings.js",
+        "site-panel.js",
+        "schedule-exams.js"
+      ],
+      "css": [
+        "comfort.css",
+        "schedule-exams.css"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ]
+}

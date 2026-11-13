@@ -1,0 +1,17 @@
+/* Match the campus timetable's native meeting cards and inherit its typography. */
+#campus-night-exam-controls{display:block;margin:0;padding:12px 16px;min-width:0}
+.cmp-grid .cn-exam-row{background:transparent}
+.cmp-grid .cn-exam-row .cmp-grid__time{color:var(--cmp-ink-700,#3d4b63);gap:5px}
+.cn-exam-tag{font-size:10px;font-weight:600;line-height:1.4}
+.cn-exam-card{display:flex;flex-direction:column;gap:5px;min-width:0;padding:8px 10px 8px 12px;border-style:solid;border-width:1px;border-top-color:var(--cmp-line,#e3e8f0);border-right-color:var(--cmp-line,#e3e8f0);border-bottom-color:var(--cmp-line,#e3e8f0);border-left-width:3px;border-left-color:var(--cmp-blue,#0098f8);border-radius:10px;background:var(--cmp-surface-card,#fff);color:var(--cmp-ink-900,#0a1535);font-family:inherit;font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+.cn-exam-card strong{font-size:12.5px;font-weight:700;line-height:1.25;color:var(--cmp-ink-900,#0a1535)}
+.cn-exam-card .cn-exam-time{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--cmp-ink-700,#3d4b63)}
+.cn-exam-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.cn-exam-type{display:inline-flex;align-items:center;padding:0 8px;min-height:20px;border-radius:999px;font-size:10.5px;font-weight:700;color:var(--cmp-blue,#0098f8);background:var(--cmp-info-bg,#e8f2fe)}
+.cn-exam-card .cn-exam-room,.cn-exam-format,.cn-exam-card small{font-size:11px;color:var(--cmp-ink-600,#5b6b84);line-height:1.4}
+.cn-exam-card .cn-exam-warning{font-size:11px;color:var(--cmp-warning,#b45309)}.cn-exam-card.cn-exam-uncertain{border-left-color:var(--cmp-warning,#b45309)}
+.cn-exam-details{font-size:11px;color:var(--cmp-ink-600,#5b6b84)}.cn-exam-details summary{cursor:pointer;width:fit-content;padding:3px 0;color:var(--cmp-ink-600,#5b6b84)}.cn-exam-details[open] summary{margin-bottom:5px}.cn-exam-details small,.cn-exam-note{display:block;margin-bottom:6px}.cn-exam-note{color:var(--cmp-ink-600,#5b6b84);font-size:11px;line-height:1.45}
+.cn-exam-card a{color:var(--cmp-blue,#0098f8);font-size:11px;font-weight:600;text-decoration:none}.cn-exam-card a:hover{text-decoration:underline}.cn-exam-card :focus-visible{outline:2px solid var(--cmp-blue,#0098f8);outline-offset:3px}
+.cn-exam-row .cmp-grid__cell{vertical-align:top}
+@media print{#campus-night-exam-controls{display:none}.cn-exam-details>*,.cn-exam-details::details-content{display:block!important;content-visibility:visible!important}.cn-exam-card{break-inside:avoid}}
+
+.cn-exam-card .cn-exam-calendar{display:block;margin-top:8px;font:inherit;font-size:11px;color:var(--cmp-blue,#0098f8);background:transparent;border:1px solid var(--cmp-line,#e3e8f0);border-radius:var(--cmp-r-ctl,12px);padding:6px 8px;cursor:pointer}.cn-exam-calendar:focus-visible{outline:2px solid var(--cmp-blue,#0098f8);outline-offset:2px}

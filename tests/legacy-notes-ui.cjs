@@ -1,0 +1,23 @@
+const fs=require('fs'),assert=require('node:assert/strict'),{JSDOM}=require('jsdom');
+const base='extension/',tick=()=>new Promise(r=>setImmediate(r));
+(async()=>{
+ const d=new JSDOM('<div id="tasks"></div>',{url:'https://campus.qairu.edu.kz/ru',runScripts:'outside-only'}),w=d.window;
+ let state={},listeners=new Set(),fail=false,delay=null;
+ w.browser={storage:{local:{get:async()=>({campusTaskNotes:state})},onChanged:{addListener:fn=>listeners.add(fn),removeListener:fn=>listeners.delete(fn)}},runtime:{sendMessage:async m=>{if(fail)return {error:'Disk unavailable'};if(delay)await delay;state={...state};if(m.value===null)delete state[m.url];else state[m.url]=m.value;for(const fn of listeners)fn({campusTaskNotes:{newValue:state}},'local');return {notes:state};}}};
+ for(const file of ['campus-data.js','preferences.js','task-notes-ui.js'])if(fs.existsSync(base+file))w.eval(fs.readFileSync(base+file,'utf8'));
+ assert.equal(typeof w.CampusTaskNotes?.mount,'function','task note editor is required');
+ const root=w.document.querySelector('#tasks'),task={url:'https://campus.qairu.edu.kz/ru/assignments/test',title:'Essay'};
+ const view=w.CampusTaskNotes.mount({root});await tick();view.decorate(task,root);
+ let editor=root.querySelector('details');editor.open=true;editor.dispatchEvent(new w.Event('toggle'));
+ let note=editor.querySelector('textarea'),select=editor.querySelector('select');note.value='Prepare references';note.dispatchEvent(new w.Event('input'));select.value='ready';select.dispatchEvent(new w.Event('change'));
+ assert.match(editor.textContent,/официальн/,'personal mark distinguished from submission');
+ root.replaceChildren();view.decorate(task,root);editor=root.querySelector('details');assert.equal(editor.querySelector('textarea').value,'Prepare references','unsaved draft survives rerender');assert.equal(editor.querySelector('select').value,'ready');
+ editor.querySelector('[data-action="save"]').click();await tick();assert.equal(state[task.url].note,'Prepare references');
+ fail=true;editor.querySelector('textarea').value='New';editor.querySelector('textarea').dispatchEvent(new w.Event('input'));editor.querySelector('[data-action="save"]').click();await tick();assert.match(editor.textContent,/Disk unavailable/);assert.equal(editor.querySelector('textarea').value,'New');
+ fail=false;editor.querySelector('[data-action="remove"]').click();await tick();assert.equal(state[task.url],undefined);
+ let resolveSave;delay=new Promise(r=>resolveSave=r);
+ editor.querySelector('textarea').value='First';editor.querySelector('textarea').dispatchEvent(new w.Event('input'));editor.querySelector('[data-action="save"]').click();await tick();
+ root.replaceChildren();view.decorate(task,root);editor=root.querySelector('details');editor.querySelector('textarea').value='New draft';editor.querySelector('textarea').dispatchEvent(new w.Event('input'));resolveSave();await tick();delay=null;
+ root.replaceChildren();view.decorate(task,root);assert.equal(root.querySelector('textarea').value,'New draft','late save cannot erase newer draft');
+ view.destroy();assert.equal(listeners.size,0);w.close();console.log('PASS task note editor: drafts survive refresh, explicit save/removal, error retention, local-vs-official labels and cleanup.');
+})().catch(error=>{console.error(error);process.exitCode=1;});
