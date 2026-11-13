@@ -20,7 +20,15 @@ Node 22.23.2; `npm ci`, `npm test`, `npm run build`, `node scripts/build-worker.
 
 ## Release status
 
-Implementation in progress. Store submission, live service checks and final review must be recorded here before claiming release. Existing 2.0 store status is historical and does not imply 2.1 approval.
+Implementation and service deployment complete; both existing store items received 2.1.0 on 13 November 2026 and are awaiting review. Store approval, a signed Firefox XPI and installation on the user's device are not yet confirmed.
+
+Firefox AMO version 6704362 / file 5248449: submitted, zero validation errors or warnings. Source archive attached; release/reviewer notes, listing and embedded privacy updated. Chrome item `akkedafgaegkaccceojhpelhamfkogpa`: package 2.1.0 verified and submitted with automatic publication after approval; listing, permission justifications and testing instructions updated. The previous pending 2.0 draft was replaced; the last observed public Chrome version was 1.2.2.
+
+Source archive commit `8377d65`. Clean `npm ci` and rebuild reproduced Firefox's 47 files, Chromium's 56 files and the Worker byte-for-byte; all JavaScript syntax checks passed. Worker output normalizes LF for cross-platform reproducibility. Archives, SHA256SUMS, test/lint logs, decisions and store confirmation screenshots are in `outputs/qairu-space-2.1.0` in the main workspace (outside this repository). Source was fast-forwarded and pushed to main without rewriting history.
+
+Additive D1 schema applied; Worker deployment `b5bc882fc3e14a16be0c270aa11a9c57`, health version 2.1.0. Existing `0 3 * * *` cron registration verified. Production synthetic checks verified 19-member suppression, publication at 20 with complete tie bands, idempotency/CAS, absence of a public grades table, immediate deletion invalidation and retired-key rejection. All synthetic grade members, metrics and results were deleted; XP population was unchanged. Publication ran against production D1 through an authorized adapter using the same algorithm; an actual scheduled cron firing was not observed. No real student's grades were enrolled.
+
+Public privacy policy updated and read back: https://gist.github.com/airsmooth/609d5c62b74f0524b27857095d125238 .
 
 ## Verification and review
 
