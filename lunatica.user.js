@@ -1,13 +1,14 @@
 // ==UserScript==
-// @name         lunatica
-// @namespace    https://wateroff.dev/
-// @version      2.0.1
-// @description  lunatica - https://wateroff.dev/qairu-campus-extension
-// @author       miras (wateroff)
-// @homepageURL  https://wateroff.dev/qairu-campus-extension
-// @supportURL   https://wateroff.dev/qairu-campus-extension
-// @downloadURL  https://wateroff.dev/lunatica.user.js
-// @updateURL    https://wateroff.dev/lunatica.user.js
+// @name         Lunatica — Campus Night fork
+// @namespace    https://github.com/airsmooth/lunatica-campus-night
+// @version      2.0.1.1
+// @description  QAIRU campus customization; fork of Lunatica by wateroff, maintained by wateroff and airsmooth.
+// @author       miras (wateroff), airsmooth
+// @license      MIT; embedded Geist Mono: OFL-1.1
+// @homepageURL  https://github.com/airsmooth/lunatica-campus-night
+// @supportURL   https://github.com/airsmooth/lunatica-campus-night/issues
+// @downloadURL  https://raw.githubusercontent.com/airsmooth/lunatica-campus-night/main/lunatica.user.js
+// @updateURL    https://raw.githubusercontent.com/airsmooth/lunatica-campus-night/main/lunatica.user.js
 // @match        https://campus.qairu.edu.kz/*
 // @run-at       document-start
 // @grant        GM_setValue
@@ -21,7 +22,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '2.0.1';
+  const VERSION = '2.0.1.1';
   const NS = 'lx';
   const KEY = 'lx.settings.v2';
   const LEGACY_KEY = 'qd.settings.v1';
