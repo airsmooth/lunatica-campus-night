@@ -1,0 +1,13 @@
+# Qairu Space
+
+Qairu Space 2 combines wateroff's Lunatica appearance with airsmooth's Campus Night study tools for students using campus.qairu.edu.kz. This unofficial extension keeps the campus website as the primary experience: native navigation and timetable, a compact study panel and a companion browser popup. The approved direction is campus-native utility without a separate decorative dashboard or flashy AI styling.
+
+Students can check the next class, exact assignment deadlines when an unambiguous time is available, exam sessions in the weekly timetable, saved pages, local notes and personal assignment progress. Personal progress remains distinct from official submission status. Exam matching retains source validation, visible uncertainty, session-table management and one-time ICS export; it must not invent future dates or imply a calendar subscription.
+
+The optional XP beta compares existing campus XP among consenting participants under pseudonyms. The extension does not award XP, rank grades, verify identities or claim university verification. Equal XP receives equal rank; tiers follow existing campus levels. The interface explains these limits, shows update dates and supports manual refresh, deletion and explicit management-key transfer. Ranking failure must not block local study tools.
+
+Lunatica supplies integrated dark color mapping while campus geometry and inherited type remain authoritative. Graphite, warm and midnight palettes, mode, scale, reduced motion, width and Aya visibility remain available. Turning the theme off removes injected theme styling. Stars, glow, decorative animation and arbitrary remote backgrounds or avatars are outside the approved release.
+
+Existing Campus Night extension identities, storage keys and saved preferences must survive updates. Notes, favorites, schedule history and imported session tables remain local. The voluntary ranking is an explicit exception to local-only data: it sends the disclosed pseudonym, XP and management credentials to its dedicated service. Grades, notes and campus login credentials do not belong in ranking data. Public participant data is distinct from the secret management key; ordinary settings backups exclude ranking credentials and retain compatibility with existing backups.
+
+Success means students find study information quickly, understand uncertainty and ranking limitations, reach Save and recovery controls on narrow screens and retain data through updates. This document records product direction and implemented surfaces, not store approval or publication. Release status belongs in release records. Use synthetic data for previews and verification.

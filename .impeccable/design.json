@@ -1,0 +1,456 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-13T11:47:36.101Z",
+  "title": "Design System: Qairu Space",
+  "extensions": {
+    "colorMeta": {
+      "campus-blue": {
+        "displayName": "campus blue",
+        "role": "primary",
+        "tonalRamp": [
+          "oklch(15.00% 0.14822 252.28)",
+          "oklch(26.43% 0.14822 252.28)",
+          "oklch(37.86% 0.14822 252.28)",
+          "oklch(49.29% 0.14822 252.28)",
+          "oklch(60.71% 0.14822 252.28)",
+          "oklch(72.14% 0.14822 252.28)",
+          "oklch(83.57% 0.14822 252.28)",
+          "oklch(95.00% 0.14822 252.28)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "accent": {
+        "displayName": "accent",
+        "role": "primary",
+        "tonalRamp": [
+          "oklch(15.00% 0.17659 256.87)",
+          "oklch(26.43% 0.17659 256.87)",
+          "oklch(37.86% 0.17659 256.87)",
+          "oklch(49.29% 0.17659 256.87)",
+          "oklch(60.71% 0.17659 256.87)",
+          "oklch(72.14% 0.17659 256.87)",
+          "oklch(83.57% 0.17659 256.87)",
+          "oklch(95.00% 0.17659 256.87)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "link": {
+        "displayName": "link",
+        "role": "primary",
+        "tonalRamp": [
+          "oklch(15.00% 0.12096 252.68)",
+          "oklch(26.43% 0.12096 252.68)",
+          "oklch(37.86% 0.12096 252.68)",
+          "oklch(49.29% 0.12096 252.68)",
+          "oklch(60.71% 0.12096 252.68)",
+          "oklch(72.14% 0.12096 252.68)",
+          "oklch(83.57% 0.12096 252.68)",
+          "oklch(95.00% 0.12096 252.68)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "canvas": {
+        "displayName": "canvas",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.00633 285.64)",
+          "oklch(26.43% 0.00633 285.64)",
+          "oklch(37.86% 0.00633 285.64)",
+          "oklch(49.29% 0.00633 285.64)",
+          "oklch(60.71% 0.00633 285.64)",
+          "oklch(72.14% 0.00633 285.64)",
+          "oklch(83.57% 0.00633 285.64)",
+          "oklch(95.00% 0.00633 285.64)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "card": {
+        "displayName": "card",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.00979 285.53)",
+          "oklch(26.43% 0.00979 285.53)",
+          "oklch(37.86% 0.00979 285.53)",
+          "oklch(49.29% 0.00979 285.53)",
+          "oklch(60.71% 0.00979 285.53)",
+          "oklch(72.14% 0.00979 285.53)",
+          "oklch(83.57% 0.00979 285.53)",
+          "oklch(95.00% 0.00979 285.53)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "main": {
+        "displayName": "main",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.00805 285.60)",
+          "oklch(26.43% 0.00805 285.60)",
+          "oklch(37.86% 0.00805 285.60)",
+          "oklch(49.29% 0.00805 285.60)",
+          "oklch(60.71% 0.00805 285.60)",
+          "oklch(72.14% 0.00805 285.60)",
+          "oklch(83.57% 0.00805 285.60)",
+          "oklch(95.00% 0.00805 285.60)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "sunk": {
+        "displayName": "sunk",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.01314 285.41)",
+          "oklch(26.43% 0.01314 285.41)",
+          "oklch(37.86% 0.01314 285.41)",
+          "oklch(49.29% 0.01314 285.41)",
+          "oklch(60.71% 0.01314 285.41)",
+          "oklch(72.14% 0.01314 285.41)",
+          "oklch(83.57% 0.01314 285.41)",
+          "oklch(95.00% 0.01314 285.41)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "line": {
+        "displayName": "line",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.01449 285.46)",
+          "oklch(26.43% 0.01449 285.46)",
+          "oklch(37.86% 0.01449 285.46)",
+          "oklch(49.29% 0.01449 285.46)",
+          "oklch(60.71% 0.01449 285.46)",
+          "oklch(72.14% 0.01449 285.46)",
+          "oklch(83.57% 0.01449 285.46)",
+          "oklch(95.00% 0.01449 285.46)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "line-strong": {
+        "displayName": "line strong",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.01718 285.50)",
+          "oklch(26.43% 0.01718 285.50)",
+          "oklch(37.86% 0.01718 285.50)",
+          "oklch(49.29% 0.01718 285.50)",
+          "oklch(60.71% 0.01718 285.50)",
+          "oklch(72.14% 0.01718 285.50)",
+          "oklch(83.57% 0.01718 285.50)",
+          "oklch(95.00% 0.01718 285.50)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "ink": {
+        "displayName": "ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.00400 286.32)",
+          "oklch(26.43% 0.00400 286.32)",
+          "oklch(37.86% 0.00400 286.32)",
+          "oklch(49.29% 0.00400 286.32)",
+          "oklch(60.71% 0.00400 286.32)",
+          "oklch(72.14% 0.00400 286.32)",
+          "oklch(83.57% 0.00400 286.32)",
+          "oklch(95.00% 0.00400 286.32)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "secondary-ink": {
+        "displayName": "secondary ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.00812 286.23)",
+          "oklch(26.43% 0.00812 286.23)",
+          "oklch(37.86% 0.00812 286.23)",
+          "oklch(49.29% 0.00812 286.23)",
+          "oklch(60.71% 0.00812 286.23)",
+          "oklch(72.14% 0.00812 286.23)",
+          "oklch(83.57% 0.00812 286.23)",
+          "oklch(95.00% 0.00812 286.23)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "muted-ink": {
+        "displayName": "muted ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.01580 285.99)",
+          "oklch(26.43% 0.01580 285.99)",
+          "oklch(37.86% 0.01580 285.99)",
+          "oklch(49.29% 0.01580 285.99)",
+          "oklch(60.71% 0.01580 285.99)",
+          "oklch(72.14% 0.01580 285.99)",
+          "oklch(83.57% 0.01580 285.99)",
+          "oklch(95.00% 0.01580 285.99)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "faint-ink": {
+        "displayName": "faint ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.01478 285.97)",
+          "oklch(26.43% 0.01478 285.97)",
+          "oklch(37.86% 0.01478 285.97)",
+          "oklch(49.29% 0.01478 285.97)",
+          "oklch(60.71% 0.01478 285.97)",
+          "oklch(72.14% 0.01478 285.97)",
+          "oklch(83.57% 0.01478 285.97)",
+          "oklch(95.00% 0.01478 285.97)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "information": {
+        "displayName": "information",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.04651 257.85)",
+          "oklch(26.43% 0.04651 257.85)",
+          "oklch(37.86% 0.04651 257.85)",
+          "oklch(49.29% 0.04651 257.85)",
+          "oklch(60.71% 0.04651 257.85)",
+          "oklch(72.14% 0.04651 257.85)",
+          "oklch(83.57% 0.04651 257.85)",
+          "oklch(95.00% 0.04651 257.85)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "warning": {
+        "displayName": "warning",
+        "role": "semantic",
+        "tonalRamp": [
+          "oklch(15.00% 0.12363 78.65)",
+          "oklch(26.43% 0.12363 78.65)",
+          "oklch(37.86% 0.12363 78.65)",
+          "oklch(49.29% 0.12363 78.65)",
+          "oklch(60.71% 0.12363 78.65)",
+          "oklch(72.14% 0.12363 78.65)",
+          "oklch(83.57% 0.12363 78.65)",
+          "oklch(95.00% 0.12363 78.65)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "danger": {
+        "displayName": "danger",
+        "role": "semantic",
+        "tonalRamp": [
+          "oklch(15.00% 0.18394 27.29)",
+          "oklch(26.43% 0.18394 27.29)",
+          "oklch(37.86% 0.18394 27.29)",
+          "oklch(49.29% 0.18394 27.29)",
+          "oklch(60.71% 0.18394 27.29)",
+          "oklch(72.14% 0.18394 27.29)",
+          "oklch(83.57% 0.18394 27.29)",
+          "oklch(95.00% 0.18394 27.29)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "warm-canvas": {
+        "displayName": "warm canvas",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.00878 75.18)",
+          "oklch(26.43% 0.00878 75.18)",
+          "oklch(37.86% 0.00878 75.18)",
+          "oklch(49.29% 0.00878 75.18)",
+          "oklch(60.71% 0.00878 75.18)",
+          "oklch(72.14% 0.00878 75.18)",
+          "oklch(83.57% 0.00878 75.18)",
+          "oklch(95.00% 0.00878 75.18)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "warm-card": {
+        "displayName": "warm card",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.01432 76.32)",
+          "oklch(26.43% 0.01432 76.32)",
+          "oklch(37.86% 0.01432 76.32)",
+          "oklch(49.29% 0.01432 76.32)",
+          "oklch(60.71% 0.01432 76.32)",
+          "oklch(72.14% 0.01432 76.32)",
+          "oklch(83.57% 0.01432 76.32)",
+          "oklch(95.00% 0.01432 76.32)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "warm-ink": {
+        "displayName": "warm ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.02200 83.26)",
+          "oklch(26.43% 0.02200 83.26)",
+          "oklch(37.86% 0.02200 83.26)",
+          "oklch(49.29% 0.02200 83.26)",
+          "oklch(60.71% 0.02200 83.26)",
+          "oklch(72.14% 0.02200 83.26)",
+          "oklch(83.57% 0.02200 83.26)",
+          "oklch(95.00% 0.02200 83.26)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "midnight-canvas": {
+        "displayName": "midnight canvas",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.00906 264.28)",
+          "oklch(26.43% 0.00906 264.28)",
+          "oklch(37.86% 0.00906 264.28)",
+          "oklch(49.29% 0.00906 264.28)",
+          "oklch(60.71% 0.00906 264.28)",
+          "oklch(72.14% 0.00906 264.28)",
+          "oklch(83.57% 0.00906 264.28)",
+          "oklch(95.00% 0.00906 264.28)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "midnight-card": {
+        "displayName": "midnight card",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.01737 259.75)",
+          "oklch(26.43% 0.01737 259.75)",
+          "oklch(37.86% 0.01737 259.75)",
+          "oklch(49.29% 0.01737 259.75)",
+          "oklch(60.71% 0.01737 259.75)",
+          "oklch(72.14% 0.01737 259.75)",
+          "oklch(83.57% 0.01737 259.75)",
+          "oklch(95.00% 0.01737 259.75)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      },
+      "midnight-ink": {
+        "displayName": "midnight ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "oklch(15.00% 0.00931 258.34)",
+          "oklch(26.43% 0.00931 258.34)",
+          "oklch(37.86% 0.00931 258.34)",
+          "oklch(49.29% 0.00931 258.34)",
+          "oklch(60.71% 0.00931 258.34)",
+          "oklch(72.14% 0.00931 258.34)",
+          "oklch(83.57% 0.00931 258.34)",
+          "oklch(95.00% 0.00931 258.34)"
+        ],
+        "rampPurpose": "Derived OKLCH preview only; not an application palette or new token scale."
+      }
+    },
+    "shadows": [
+      {
+        "name": "native-surface",
+        "value": "0 1px 2px rgba(0,0,0,.55)",
+        "purpose": "Native Lunatica surface token; not used by the study shell."
+      },
+      {
+        "name": "native-overlay",
+        "value": "0 12px 34px rgba(0,0,0,.7)",
+        "purpose": "Native Lunatica overlay token."
+      },
+      {
+        "name": "native-card-edge",
+        "value": "inset 0 1px 0 var(--lx-edge)",
+        "purpose": "Existing campus card inset edge only."
+      }
+    ],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "panel-two-columns (container)",
+        "value": "800px"
+      },
+      {
+        "name": "panel-single-column and compact ranking (container)",
+        "value": "520px"
+      },
+      {
+        "name": "account-actions (viewport)",
+        "value": "480px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Panel button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Panel button extracted from the implemented campus extension.",
+      "html": "<button class=\"ds-button\">Обновить</button>",
+      "css": ".ds-button{font-family:inherit;font-size:12px;font-weight:600;line-height:1.4;color:var(--cmp-ink-900,#ededf0);background:var(--cmp-surface-card,#18181d);border:1px solid var(--cmp-line,#2a2a32);border-radius:var(--cmp-r-ctl,12px);padding:6px 12px;min-height:32px;cursor:pointer}.ds-button:hover{background:var(--cmp-surface-main,#131317)}.ds-button:focus-visible{outline:2px solid var(--cmp-blue,#5aa9ff);outline-offset:3px}.ds-button:disabled{opacity:.5;cursor:wait}"
+    },
+    {
+      "name": "Search field",
+      "kind": "input",
+      "refersTo": "search-input",
+      "description": "Search field extracted from the implemented campus extension.",
+      "html": "<label class=\"ds-label\" for=\"ds-search\">Поиск</label><input id=\"ds-search\" class=\"ds-search\" placeholder=\"Курс или страница\">",
+      "css": ".ds-label{display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:var(--cmp-ink-900,#ededf0)}.ds-search{width:100%;padding:10px 12px;border:1px solid var(--cmp-line,#2a2a32);border-radius:var(--cmp-r-ctl,12px);background:var(--cmp-surface-card,#18181d);color:var(--cmp-ink-900,#ededf0);font-family:inherit;font-size:14px}.ds-search:focus-visible{outline:2px solid var(--cmp-blue,#5aa9ff);outline-offset:3px}"
+    },
+    {
+      "name": "Panel tabs",
+      "kind": "nav",
+      "description": "Panel tabs extracted from the implemented campus extension.",
+      "html": "<nav class=\"ds-tabs\"><button aria-pressed=\"true\">Обзор</button><button aria-pressed=\"false\">Рейтинг XP</button><button aria-pressed=\"false\">Настройки</button></nav>",
+      "css": ".ds-tabs{display:flex;flex-wrap:wrap;gap:0 20px;border-bottom:1px solid var(--cmp-line,#2a2a32);margin:8px 0 16px}.ds-tabs button{font-family:inherit;font-size:12px;font-weight:600;line-height:1.4;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;padding:10px 0;color:var(--cmp-ink-600,#a2a2ad);cursor:pointer}.ds-tabs button[aria-pressed=true]{border-bottom-color:var(--cmp-blue,#5aa9ff);color:var(--cmp-ink-900,#ededf0)}.ds-tabs button:focus-visible{outline:2px solid var(--cmp-blue,#5aa9ff);outline-offset:3px}"
+    },
+    {
+      "name": "Exam type",
+      "kind": "chip",
+      "refersTo": "exam-type",
+      "description": "Exam type extracted from the implemented campus extension.",
+      "html": "<span class=\"ds-type\">Экзамен</span>",
+      "css": ".ds-type{display:inline-flex;align-items:center;padding:0 8px;min-height:20px;border-radius:999px;font-family:inherit;font-size:10.5px;font-weight:700;color:var(--cmp-blue,#5aa9ff);background:var(--cmp-info-bg,#15243a)}"
+    },
+    {
+      "name": "Study panel shell",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Study panel shell extracted from the implemented campus extension.",
+      "html": "<section class=\"ds-panel\"><h2>Учебная сводка</h2><p>Расписание, дедлайны и заметки</p></section>",
+      "css": ".ds-panel{color:var(--cmp-ink-900,#ededf0);background:var(--cmp-surface-card,#18181d);border:1px solid var(--cmp-line,#2a2a32);border-radius:var(--cmp-r-card,16px);padding:14px 20px;font-family:inherit}.ds-panel h2{margin:0;font-size:16px;font-weight:700;line-height:1.4}.ds-panel p{font-size:12px;line-height:1.5;color:var(--cmp-ink-600,#a2a2ad)}"
+    },
+    {
+      "name": "Timetable exam",
+      "kind": "card",
+      "refersTo": "meeting",
+      "description": "Timetable exam extracted from the implemented campus extension.",
+      "html": "<article class=\"ds-meeting\"><strong>Учебный пример</strong><span>10:00–11:00</span><a href=\"#details\">Источник</a></article>",
+      "css": ".ds-meeting{display:flex;flex-direction:column;gap:5px;padding:8px 10px 8px 12px;border:1px solid var(--cmp-line,#2a2a32);border-left:3px solid var(--cmp-blue,#5aa9ff);border-radius:10px;background:var(--cmp-surface-card,#18181d);color:var(--cmp-ink-900,#ededf0);font-family:inherit;font-size:12px;line-height:1.4}.ds-meeting strong{font-size:12.5px;font-weight:700;line-height:1.25}.ds-meeting span{font-variant-numeric:tabular-nums;color:var(--cmp-ink-700,#dcdce2)}.ds-meeting a{color:var(--cmp-blue,#5aa9ff);font-size:11px;font-weight:600;text-decoration:none}.ds-meeting a:hover{text-decoration:underline}.ds-meeting a:focus-visible{outline:2px solid var(--cmp-blue,#5aa9ff);outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Follow the campus interface",
+    "overview": "Qairu Space preserves the QAIRU Campus interface and adds compact study controls. Lunatica by wateroff supplies integrated dark color mapping; native navigation, timetable geometry and inherited typography remain authoritative. The approved world is quiet, readable and practical, without a separate decorative dashboard.\n\nThis record is extracted from extension/lunatica-theme.js, scripts/build-theme.cjs, extension/site-panel.js, extension/ranking-ui.js, extension/ranking-account.css and extension/schedule-exams.css. Frontmatter describes default graphite colors, selected alternative-palette anchors and component shape fallbacks. Runtime campus variables take precedence.",
+    "keyCharacteristics": [
+      "Lunatica tonal surfaces, inherited type and thin separators.",
+      "Compact controls and blue underline navigation.",
+      "Native timetable geometry and explicit uncertainty.",
+      "Responsive columns, accessible disclosures and a plain voluntary XP table."
+    ],
+    "rules": [
+      {
+        "name": "The Campus Authority Rule",
+        "body": "Resolve on-site colors through the campus tokens before their documented defaults.",
+        "section": "colors"
+      },
+      {
+        "name": "The Native Meeting Rule",
+        "body": "Keep the native day/time geometry and semantic left border, including the warning-color edge for uncertain sessions.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "**Do** inherit campus tokens and typography on site.",
+      "**Do** label XP as participant-supplied and keep consent, update dates and deletion controls visible.",
+      "**Do** preserve native timetable placement, existing preferences and collapse behavior.",
+      "**Do** keep official assignment status distinct from personal progress and notes.",
+      "**Do** verify light/dark states, narrow layouts, keyboard focus, source failures and SPA remounts.",
+      "**Do** use synthetic preview data and keep preview assets out of extension packages."
+    ],
+    "donts": [
+      "**Don't** add a separate dashboard brand, promotional headline, stars, glow or arbitrary external backgrounds.",
+      "**Don't** add shadows or nested decorative feature cards to the native summary.",
+      "**Don't** hide uncertainty or let a scrolling note editor make Save unreachable.",
+      "**Don't** promote legacy eyebrow selectors or popup system typography into new display or kicker patterns."
+    ]
+  }
+}
