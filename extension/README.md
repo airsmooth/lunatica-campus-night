@@ -1,4 +1,4 @@
-# Campus Night — QAIRU · 1.4.0
+# Qairu Space — QAIRU · 1.4.0
 
 Неофициальное расширение для Firefox 142+ и Chromium 120+, только campus.qairu.edu.kz. Статус отправки и публикации указан отдельно в outputs/PUBLISHING.md.
 

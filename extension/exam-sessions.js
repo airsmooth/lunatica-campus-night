@@ -10,7 +10,7 @@
     return parts.map(part=>part.trim().replace(/\s*[–—-]\s*/,'–')).join('; ');
   }
   function validate(value){
-    if(value?.format!=='campus-night-exams'||value.version!==1)throw Error('Нужна таблица Campus Night в формате JSON версии 1. PDF сам по себе не является таблицей.');
+    if(value?.format!=='campus-night-exams'||value.version!==1)throw Error('Нужна таблица Qairu Space в формате JSON версии 1. PDF сам по себе не является таблицей.');
     if(!/^\/api\/storage\/[a-zA-Z0-9-]{1,100}$/.test(value.sourcePath)||!/^[a-f0-9]{64}$/.test(value.sha256))throw Error('Некорректная ссылка или SHA-256 исходного PDF.');
     const sourceTitle=string(value.sourceTitle,300);if(sourceTitle.length<8)throw Error('Укажите полное название исходного документа.');
     if(!Array.isArray(value.rows)||!value.rows.length||value.rows.length>1000)throw Error('В таблице должно быть от 1 до 1000 строк.');

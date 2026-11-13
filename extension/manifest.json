@@ -3,12 +3,13 @@
   "name": "Qairu Space",
   "version": "2.0.0",
   "author": "wateroff, airsmooth",
-  "description": "Тёмная тема, ближайшая пара, дедлайны, избранное и экзамены для campus.qairu.edu.kz. Неофициальное расширение.",
+  "description": "Тема Lunatica, экзамены в расписании, дедлайны, заметки и добровольный рейтинг XP для кампуса QAIRU.",
   "permissions": [
     "storage"
   ],
   "host_permissions": [
-    "https://campus.qairu.edu.kz/*"
+    "https://campus.qairu.edu.kz/*",
+    "https://qairu-space-xp.airsmooth.workers.dev/*"
   ],
   "browser_specific_settings": {
     "gecko": {
@@ -17,7 +18,8 @@
       "data_collection_permissions": {
         "required": [
           "none"
-        ]
+        ],
+        "optional": ["websiteContent", "authenticationInfo", "personallyIdentifyingInfo"]
       }
     }
   },
@@ -26,7 +28,7 @@
     "96": "icon.svg"
   },
   "action": {
-    "default_title": "Campus Night",
+    "default_title": "Qairu Space",
     "default_popup": "popup.html",
     "default_icon": "icon.svg"
   },
@@ -38,6 +40,8 @@
       "exam-sessions.js",
       "preferences.js",
       "schedule-history.js",
+      "xp.js",
+      "ranking-background.js",
       "background.js"
     ]
   },
@@ -59,6 +63,7 @@
         "lunatica-theme.js",
         "content.js",
         "campus-data.js",
+        "xp.js",
         "exam-data.js",
         "exam-sessions.js",
         "dashboard-content.js",
@@ -72,6 +77,7 @@
         "popup.js",
         "backup-ui.js",
         "site-settings.js",
+        "ranking-ui.js",
         "site-panel.js",
         "schedule-exams.js"
       ],

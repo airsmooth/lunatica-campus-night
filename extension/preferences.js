@@ -78,7 +78,7 @@
   function parse(text){
     if(typeof text!=='string'||new TextEncoder().encode(text).length>backupLimit)throw Error('Размер файла должен быть не больше 1 МБ.');
     let doc;try{doc=JSON.parse(text);}catch{throw Error('Не удалось прочитать JSON-файл.');}
-    if(doc?.format!=='campus-night-settings')throw Error('Это не формат резервной копии Campus Night.');
+    if(doc?.format!=='campus-night-settings')throw Error('Это не формат резервной копии Qairu Space.');
     if(![1,2].includes(doc.version))throw Error('Версия резервной копии не поддерживается. Обновите расширение.');
     return validate(doc.data);
   }

@@ -1,0 +1,14 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Рейтинг XP — Qairu Space</title><link rel="stylesheet" href="ranking-account.css"></head><body><main>
+<a href="https://campus.qairu.edu.kz/ru/trajectory" target="_blank" rel="noopener">Открыть мою траекторию в кампусе</a>
+<h1>Рейтинг XP</h1><p>Qairu Space · добровольная бета</p>
+<p>Сравнивай существующий XP под псевдонимом. Баллы присланы расширением и не проверены университетом. Это не рейтинг оценок; запись не подтверждает личность участника.</p>
+<p id="member" class="result">Проверяю участие…</p>
+<section><h2>Участие</h2><p id="xp">Открой кампус в этом браузере, чтобы прочитать свой XP.</p><button id="read-xp" type="button">Прочитать XP из кампуса</button>
+<label for="alias">Псевдоним</label><input id="alias" maxlength="24" minlength="3" autocomplete="off" placeholder="Например, Orbit"><p class="hint">Не указывай ФИО, группу, почту или номер студента.</p>
+<p>После вступления на сервер Cloudflare передаются псевдоним, XP и случайный ключ управления. Псевдоним, XP, тир, место и время обновления видны всем участникам. Оценки, заметки и данные входа в кампус не передаются. Cloudflare обрабатывает IP при соединении.</p>
+<p>XP обновляется по твоей кнопке. Запись удаляется при выходе или через 90 дней без обновления. <a href="https://gist.github.com/airsmooth/609d5c62b74f0524b27857095d125238" target="_blank" rel="noopener">Политика приватности</a></p>
+<label class="check"><input type="checkbox" id="consent">Согласен передать эти данные и участвовать в публичном рейтинге под псевдонимом.</label>
+<div class="actions"><button id="join" type="button" disabled>Присоединиться</button><button id="permit" type="button" disabled>Разрешить передачу данных</button></div></section>
+<section><h2>Перенос в другой браузер</h2><p>Ключ даёт право менять и удалить запись. Храни его у себя и никому не отправляй. Обычный файл настроек этот ключ не содержит. Без сохранённого ключа восстановить доступ нельзя.</p><button id="export" type="button" disabled>Скачать ключ управления</button><label for="key-file">Восстановить из своего файла ключа</label><input id="key-file" type="file" accept=".json,application/json"><button id="import" type="button" disabled>Восстановить участие</button></section>
+<section><h2>Выход из рейтинга</h2><p>Запись исчезнет из действующей таблицы. Настройки, экзамены и заметки останутся. При ошибке сети повтори удаление; ключ сохраняется до подтверждения сервера.</p><label class="check"><input type="checkbox" id="delete-confirm">Удалить мою запись из рейтинга</label><button id="delete" type="button" disabled>Удалить запись</button></section>
+<p id="status" role="status" aria-live="polite"></p><footer>wateroff и airsmooth · Неофициальное дополнение кампуса</footer></main><script src="ranking-account.js"></script></body></html>

@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const template=`
-    <section id="appearance" class="panel" hidden aria-label="Настройки Campus Night">
+    <section id="appearance" class="panel" hidden aria-label="Настройки Qairu Space">
       <h3>Оформление</h3>
       <fieldset class="mode"><legend>Тема</legend><label><input type="radio" name="mode" value="dark"> Тёмная</label><label><input type="radio" name="mode" value="system"> Как в системе</label><label><input type="radio" name="mode" value="off"> Исходная</label></fieldset>
       <fieldset class="palette"><legend>Цветовая схема</legend><label><input type="radio" name="palette" value="graphite"> Графит</label><label><input type="radio" name="palette" value="warm"> Тёплая</label><label><input type="radio" name="palette" value="midnight"> Полночь</label></fieldset>

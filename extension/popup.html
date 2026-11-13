@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="ru">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Campus Night</title><link rel="stylesheet" href="popup.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Qairu Space</title><link rel="stylesheet" href="popup.css"></head>
 <body>
-  <header><div><h1>Campus Night</h1><p>Дополнение к QAIRU Campus</p></div></header>
+  <header><div><h1>Qairu Space</h1><p>Дополнение к QAIRU Campus</p></div></header>
   <nav class="tabs" aria-label="Разделы расширения"><button data-panel="today" aria-pressed="true">Сегодня</button><button data-panel="exams" aria-pressed="false">Экзамены</button><button data-panel="favorites" aria-pressed="false">Избранное</button><button data-panel="appearance" aria-pressed="false">Вид</button></nav>
   <main>
     <section id="today" class="panel"><div class="section-head"><h2>Ближайшая пара</h2><button id="refresh">Обновить</button></div><div id="next-class" class="feature-card"><p>Загружаю расписание…</p></div><div class="section-head"><h2>Дедлайны</h2><select id="deadline-filter" aria-label="Период дедлайнов"><option value="week">7 дней</option><option value="today">Сегодня</option><option value="all">Все</option></select></div><div id="deadlines"></div><p id="data-status" role="status" class="data-status"></p><a class="campus-link" href="https://campus.qairu.edu.kz/ru" target="_blank" rel="noopener">Открыть кампус ↗</a></section>

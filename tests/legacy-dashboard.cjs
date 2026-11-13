@@ -29,13 +29,16 @@ async function run(){
   assert.equal(E.match({title:E.titles.math,stream:1,group:2},[],'kk').matches[0].room,'219','explicit language selection can resolve missing evidence');
   // Real collector, exact allowed endpoints, and byte-level source verification.
   const w=d.window;let listener;const requests=[];
+  // Public test fixtures must not depend on a document from a private campus session.
+  const syntheticPDF=new TextEncoder().encode('%PDF-1.4 synthetic test document');
+  w.CampusExams={...E,sha256:require('node:crypto').createHash('sha256').update(syntheticPDF).digest('hex')};
   Object.defineProperty(w,'crypto',{value:webcrypto});w.AbortSignal=AbortSignal;
   w.browser={runtime:{onMessage:{addListener:fn=>listener=fn}}};
   let mismatch=false,duplicateDocument=false,emptyTeachingWeek=false;
   w.fetch=async(url,options)=>{
     requests.push({url,options});assert.equal(options.credentials,'same-origin');assert.equal(options.redirect,'error');
     const pathname=new URL(url).pathname;let body;
-    if(pathname===E.sourcePath)return {ok:true,arrayBuffer:async()=>mismatch?new Uint8Array([1,2,3]).buffer:Uint8Array.from(fs.readFileSync('work/exams-source.pdf')).buffer};
+    if(pathname===E.sourcePath)return {ok:true,arrayBuffer:async()=>mismatch?new Uint8Array([1,2,3]).buffer:syntheticPDF.buffer};
     if(pathname==='/ru/schedule')body=emptyTeachingWeek?'<h1>Расписание</h1><p>Занятий нет</p>':html;
     else if(pathname==='/ru/assignments')body=assignments;
     else if(pathname==='/ru/documents')body=`<h1>Документы</h1><a aria-label="${E.sourceTitle}" href="${E.sourcePath}">${E.sourceTitle}</a>`+(duplicateDocument?'<a aria-label="Расписание экзаменов: бакалавриат, ноябрь 2026, исправлено" href="/api/storage/revised">Исправлено</a>':'');

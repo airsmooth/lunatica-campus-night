@@ -3,12 +3,12 @@
   if(window!==window.top) return;
   const preferenceKey='campusPanel';
   let collapsed=/^\/(ru|kk|en)\/schedule\/?$/.test(location.pathname), preferencesLoaded=false, host=null, root=null, dashboard=null;
-  let refreshTimer, scheduled=false, loaded=false, examUI=null,settingsUI=null;
+  let refreshTimer, scheduled=false, loaded=false, examUI=null,settingsUI=null,rankingUI=null;
   const template=`
-    <section class="shell" aria-label="Campus Night — учебная панель">
+    <section class="shell" aria-label="Qairu Space — учебная панель">
       <header><h2>Учебная сводка</h2><button id="panel-toggle" aria-expanded="true" aria-controls="panel-content">Свернуть</button></header>
       <div id="panel-content">
-        <nav class="tabs" aria-label="Разделы учебной панели"><button data-panel="today" aria-pressed="true">Обзор</button><button data-panel="exams" aria-pressed="false">Экзамены</button><button data-panel="search" aria-pressed="false">Поиск</button><button data-panel="appearance" aria-pressed="false">Настройки</button></nav>
+        <nav class="tabs" aria-label="Разделы учебной панели"><button data-panel="today" aria-pressed="true">Обзор</button><button data-panel="exams" aria-pressed="false">Экзамены</button><button data-panel="ranking" aria-pressed="false">Рейтинг XP</button><button data-panel="search" aria-pressed="false">Поиск</button><button data-panel="appearance" aria-pressed="false">Настройки</button></nav>
         <section id="today" class="panel">
           <div class="overview">
             <section class="column"><div class="section-head"><h3>Ближайшая пара</h3><button id="refresh">Обновить</button></div><div id="next-class" class="feature-card"><p>Загружаю расписание…</p></div></section>
@@ -51,6 +51,7 @@
     if(!collapsed&&!loaded){loaded=true;dashboard.refresh();}
   }
   function unmount(){
+    rankingUI?.destroy();rankingUI=null;
     dashboard?.destroy();dashboard=null;examUI?.destroy();examUI=null;settingsUI?.destroy();settingsUI=null;clearInterval(refreshTimer);
     host?.remove();host=null;root=null;loaded=false;
   }
@@ -75,6 +76,7 @@
     content.append(...parsed.body.childNodes);root.append(content);
     target.prepend(host);
     settingsUI=globalThis.CampusSiteSettings?.mount({root,request:CampusService.request});
+    rankingUI=globalThis.CampusRanking?.mount({root});
     dashboard=CampusDashboard.mount({root,request:CampusService.request,autoLoad:false,isActive:active});
     examUI=CampusExamUI.mount({root,request:CampusService.request});
     root.querySelector('#panel-toggle').addEventListener('click',async()=>{

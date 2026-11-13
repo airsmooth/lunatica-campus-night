@@ -71,7 +71,7 @@
     if(loading){status.textContent='Проверяю PDF и группы ваших курсов…';return;}
     if(error){status.textContent=error;return;}
     if(!data){status.textContent='Подготавливаю экзамены…';load();return;}
-    if(!dates.length||dates.some(date=>date===null)){status.textContent='Не удалось определить даты этой недели. Откройте список экзаменов в панели Campus Night.';return;}
+    if(!dates.length||dates.some(date=>date===null)){status.textContent='Не удалось определить даты этой недели. Откройте список экзаменов в панели Qairu Space.';return;}
     const visible=sessions().filter(session=>dates.includes(session.date));
     const unresolved=courses().filter(course=>!course.matches.length).length;
     const grouped=new Map();for(const session of visible){const start=session.time.match(/^(\d{1,2}):(\d{2})/);if(!start)continue;const minute=+start[1]*60 + +start[2];if(!grouped.has(minute))grouped.set(minute,[]);grouped.get(minute).push(session);}

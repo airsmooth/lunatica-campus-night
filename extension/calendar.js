@@ -33,7 +33,7 @@
   const upcoming=(items,now=Date.now(),certainOnly=true)=>items.filter(item=>item.end>now&&(!certainOnly||!item.tentative));
   function serialize(items,now=Date.now()){
     if(!items.length)throw Error('Нет подходящих предстоящих экзаменов для календаря.');
-    const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Campus Night//QAIRU Exams//RU','CALSCALE:GREGORIAN'];
+    const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Qairu Space//QAIRU Exams//RU','CALSCALE:GREGORIAN'];
     for(const item of items)lines.push('BEGIN:VEVENT','UID:'+escape(item.uid),'DTSTAMP:'+utc(now),'DTSTART:'+utc(item.start),'DTEND:'+utc(item.end),
       'SUMMARY:'+escape(item.title),'LOCATION:'+escape(item.location),'DESCRIPTION:'+escape(item.description),'URL:'+item.url,
       'STATUS:'+(item.tentative?'TENTATIVE':'CONFIRMED'),'TRANSP:OPAQUE','END:VEVENT');
