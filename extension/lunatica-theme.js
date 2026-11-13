@@ -231,7 +231,7 @@ globalThis.CampusSpaceTheme=(()=>{
   }
 
 
-    return themeCSS();
+    return themeCSS()+'html:root{--cmp-ink-700:'+P.ink2+';}';
   }
   return {css,mapDecl};
 })();

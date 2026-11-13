@@ -25,4 +25,10 @@ test('live palette and system changes update campus tokens and remove owned styl
  b.change({campusNight:{newValue:{mode:'off'}}},'local');assert.equal(d.querySelector('#qairu-space-theme')?.textContent||'','');assert.equal(b.writes(),0);b.dom.window.close();
 });
 test('storage failure never overwrites saved settings',async()=>{const b=await boot(undefined,{fail:true});assert.equal(b.writes(),0);b.dom.window.close()});
+test('date text token stays readable inside the isolated study panel',async()=>{
+ const b=await boot({mode:'dark'});
+ const luminance=h=>{const c=h.match(/[a-f0-9]{2}/gi).map(x=>parseInt(x,16)/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722};
+ for(const palette of ['graphite','warm','midnight']){const css=b.w.CampusSpaceTheme.css(palette),ink=css.match(/--cmp-ink-700:(#[a-f0-9]{6})/i)?.[1],surface=css.match(/--cmp-surface-card:(#[a-f0-9]{6})/i)?.[1];assert.ok(ink,'isolated panel needs an inherited date color');assert.ok((luminance(ink)+.05)/(luminance(surface)+.05)>=4.5)}
+ b.dom.window.close();
+});
 

@@ -1,0 +1,12 @@
+{
+  "script_name": "qairu-space-xp",
+  "database_id": "575864e1-8398-40dd-89da-a385628a543e",
+  "main_module": "worker.mjs",
+  "compatibility_date": "2026-11-13",
+  "bindings": [
+    {"type":"d1","name":"DB","database_id":"575864e1-8398-40dd-89da-a385628a543e"},
+    {"type":"ratelimit","name":"RATE","namespace_id":"719641283","simple":{"limit":240,"period":60}}
+  ],
+  "observability": {"enabled":true,"logs":{"enabled":true,"invocation_logs":false,"head_sampling_rate":0.01},"traces":{"enabled":true,"head_sampling_rate":0.01},"redact_query_string":true},
+  "logpush": false
+}

@@ -20,7 +20,7 @@ globalThis.CampusRankingClient=(()=>{
    const result=await response.json();if(!response.ok)throw Object.assign(Error(result.error||'Не удалось выполнить запрос.'),{status:response.status});return result;
   }
   async function xp(sender){
-   let tabId=sender.tab?.id;
+   let tabId=senderType(sender)==='campus'?sender.tab?.id:undefined;
    if(tabId===undefined){const tabs=await b.tabs.query({url:'https://campus.qairu.edu.kz/*'});tabs.sort((a,b)=>Number(b.active)-Number(a.active));tabId=tabs[0]?.id}
    if(tabId===undefined)throw Error('Откройте кампус и войдите в свой кабинет, затем повторите.');
    let result;try{result=await b.tabs.sendMessage(tabId,{type:'campus:xp'},{frameId:0})}catch{throw Error('Не удалось прочитать XP. Обновите вкладку кампуса и войдите в кабинет.')}

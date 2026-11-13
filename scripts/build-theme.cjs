@@ -12,7 +12,7 @@ const adapter=`
     if(palette==='midnight')Object.assign(P,{...SCALES.amoled,canvas:'#0c0e12',soft:'#11151b',surface:'#171c24',ink:'#d5d9df'});
     const S={contrast:'normal'},isDark=()=>true,bgActive=()=>false,scale=()=>P;
     ${theme}
-    return themeCSS();
+    return themeCSS()+'html:root{--cmp-ink-700:'+P.ink2+';}';
   }
   return {css,mapDecl};
 `;

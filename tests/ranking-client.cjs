@@ -4,7 +4,7 @@ function setup(){let secret=null,record={},calls=[],fail=false,allowed=true,list
  const vault={get:async()=>secret,put:async s=>{secret=s},clear:async()=>{secret=null}};
  const c=ctx.CampusRankingClient.create({browser:ctx.browser,fetch:ctx.fetch,vault});
  const own={id:'test',url:'moz-extension://test/ranking-account.html'},campus={id:'test',url:'https://campus.qairu.edu.kz/ru',tab:{id:1}};
- return {c,own,campus,calls,getSecret:()=>secret,fail:v=>fail=v,permit:v=>allowed=v,record};
+ return {c,own,campus,calls,getSecret:()=>secret,fail:v=>fail=v,permit:v=>allowed=v,record,browser:ctx.browser};
 }
 test('consent and sender guard; state never transmits XP or reveals secret',async()=>{
  const s=setup();await s.c.handle({action:'state'},s.campus);assert.equal(s.calls.length,0);
@@ -24,4 +24,9 @@ test('revocation blocks member traffic and key import requires no active local i
  const s=setup();await s.c.handle({action:'join',alias:'Orbit',consent:true},s.own);let n=s.calls.length;s.permit(false);
  assert.ok((await s.c.handle({action:'update'},s.campus)).error);assert.equal(s.calls.length,n);
  s.permit(true);assert.ok((await s.c.handle({action:'import',secret:'b'.repeat(64),consent:true},s.own)).error);
+});
+test('account page reads XP from a campus tab, never its own extension tab',async()=>{
+ const s=setup();s.own.tab={id:99};s.browser.tabs.sendMessage=async id=>{assert.equal(id,1);return {xp:1200}};
+ assert.equal((await s.c.handle({action:'xp'},s.own)).xp,1200);
+ assert.ok((await s.c.handle({action:'join',alias:'Orbit',consent:true},s.own)).member);
 });
