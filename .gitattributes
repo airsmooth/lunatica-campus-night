@@ -1,0 +1,5 @@
+# Preserve the imported upstream bytes, including line endings.
+lunatica.user.js -text
+*.md text eol=lf
+LICENSE text eol=lf
+licenses/*.txt text eol=lf
