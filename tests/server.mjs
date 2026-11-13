@@ -1,6 +1,6 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import fs from 'node:fs';
 import worker from '../server/worker.mjs';
-function setup(){const db=new DatabaseSync(':memory:');db.exec(fs.readFileSync('server/schema.sql','utf8'));return {db,DB:{prepare(sql){let params=[];const s={bind(...p){params=p;return s},async first(){return db.prepare(sql).get(...params)||null},async all(){return {results:db.prepare(sql).all(...params)}},async run(){return {meta:db.prepare(sql).run(...params)}}};return s}},RATE:{limit:async()=>({success:true})}}}
+function setup(){const db=new DatabaseSync(':memory:');db.exec(fs.readFileSync('server/schema.sql','utf8'));db.exec(fs.readFileSync('server/grades-schema.sql','utf8'));return {db,DB:{prepare(sql){let params=[];const s={bind(...p){params=p;return s},async first(){return db.prepare(sql).get(...params)||null},async all(){return {results:db.prepare(sql).all(...params)}},async run(){return {meta:db.prepare(sql).run(...params)}}};return s}},RATE:{limit:async()=>({success:true})}}}
 const key=n=>n.repeat(64),send=(env,method,path='/v1/member',token=key('a'),body)=>worker.fetch(new Request('https://test.local'+path,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.1'},...(body===undefined?{}:{body:JSON.stringify(body)})}),env);
 const join=(e,k,xp,alias)=>send(e,'PUT','/v1/member',k,{xp,alias,join:true});
 test('idempotent enrollment, tied ranks, own update/decrease and deletion',async()=>{

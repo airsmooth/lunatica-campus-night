@@ -1,4 +1,5 @@
 import '../extension/xp.js';
+import {routeGrades,publishGrades} from './grades.mjs';
 const X=globalThis.CampusXP,RETENTION=90*86400000;
 const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET, PUT, DELETE, OPTIONS','Access-Control-Allow-Headers':'Authorization, Content-Type'};
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers});
@@ -20,8 +21,9 @@ export default {
  async fetch(request,env){
   try{
    const url=new URL(request.url),method=request.method;
+   if(url.pathname.startsWith('/v2/grades/'))return routeGrades(request,env);
    if(method==='OPTIONS')return new Response(null,{status:204,headers});
-   if(url.pathname==='/health'&&method==='GET')return json({service:'Qairu Space XP beta',version:'2.0.0'});
+   if(url.pathname==='/health'&&method==='GET')return json({service:'Qairu Space beta',version:'2.1.0'});
    if(!['/v1/board','/v1/member'].includes(url.pathname))throw error('Не найдено.',404);
    if(!env.RATE)throw error('Рейтинг временно недоступен.',503);
    const ipHash=await hash(request.headers.get('CF-Connecting-IP')||'unknown');
@@ -50,5 +52,5 @@ export default {
    const m=await member(env,tokenHash,cutoff);if(!m)throw error('Запись не найдена. Присоединитесь заново, если хотите участвовать.',404);return json({member:m,verified:false});
   }catch(e){return json({error:e.status?e.message:'Рейтинг временно недоступен. Повторите позже.'},e.status||503)}
  },
- async scheduled(event,env){await env.DB.prepare('DELETE FROM participants WHERE updated_at<=?').bind(Date.now()-RETENTION).run()}
+ async scheduled(event,env){await env.DB.prepare('DELETE FROM participants WHERE updated_at<=?').bind(Date.now()-RETENTION).run();await publishGrades(env)}
 };
