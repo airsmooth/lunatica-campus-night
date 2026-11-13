@@ -2,7 +2,7 @@ const fs=require('node:fs'),path=require('node:path'),{Resvg}=require('@resvg/re
 const root=path.resolve(__dirname,'..'),source=path.join(root,'extension');
 for(const target of ['firefox','chromium']){
  const out=path.join(root,'dist',target);fs.mkdirSync(out,{recursive:true});
- for(const file of fs.readdirSync(source)){if(file==='vendor')continue;fs.cpSync(path.join(source,file),path.join(out,file),{recursive:true})}
+ for(const file of fs.readdirSync(source)){if(file==='vendor')continue;const from=path.join(source,file),to=path.join(out,file);if(fs.statSync(from).isFile()&&/\.(js|css|html|md|json|svg)$/.test(file))fs.writeFileSync(to,fs.readFileSync(from,'utf8').replace(/\r\n/g,'\n'));else fs.cpSync(from,to,{recursive:true})}
  fs.copyFileSync(path.join(root,'LICENSE'),path.join(out,'LICENSE'));
  const m=JSON.parse(fs.readFileSync(path.join(out,'manifest.json')));
  if(target==='chromium'){
