@@ -29,8 +29,8 @@ globalThis.CampusRanking=(()=>{
   }
   async function load(){state=await request('state');controls();self.hidden=!state.hasKey;self.textContent=state.member?`${state.member.alias} · ${state.member.xp.toLocaleString('ru-RU')} XP · ${state.member.tier?.name||''}. Сохранённый результат; для актуального места обновите список.`:'Вступление не завершено. Откройте управление, чтобы повторить или удалить запись.';const data=await request('list',{offset});if(disposed)return;render(data);if(state.hasKey){try{const r=await request('self');state.member=r.member;self.textContent=`${r.member.alias} · место ${r.member.rank} · ${r.member.xp.toLocaleString('ru-RU')} XP · ${r.member.tier.name}`;render(data)}catch(e){self.textContent+=' '+e.message}}}
   async function work(fn){if(busy||disposed)return;busy=true;controls();status.textContent='Загружаю…';try{await fn();if(!disposed)status.textContent=''}catch(e){if(!disposed)status.textContent=e.message}finally{busy=false;if(!disposed)controls()}}
-  refresh.onclick=()=>work(load);open.onclick=()=>work(()=>request('open'));update.onclick=()=>work(async()=>{await request('update');await load()});
-  remove.onclick=()=>{confirm.hidden=false;yes.focus()};no.onclick=()=>{confirm.hidden=true;remove.focus()};yes.onclick=()=>work(async()=>{await request('delete',{confirm:true});confirm.hidden=true;await load()});
+  refresh.onclick=()=>work(load);open.onclick=()=>work(()=>request('open'));update.onclick=e=>e.isTrusted&&work(async()=>{await request('update');await load()});
+  remove.onclick=()=>{confirm.hidden=false;yes.focus()};no.onclick=()=>{confirm.hidden=true;remove.focus()};yes.onclick=e=>e.isTrusted&&!confirm.hidden&&work(async()=>{await request('delete',{confirm:true});confirm.hidden=true;await load()});
   prev.onclick=()=>work(async()=>{offset=Math.max(0,offset-50);await load()});next.onclick=()=>work(async()=>{offset+=50;await load()});
   controls();const activate=()=>work(load),tab=root.querySelector('[data-panel="ranking"]');tab?.addEventListener('click',activate);
   return {activate,destroy(){disposed=true;tab?.removeEventListener('click',activate);section.remove()}};
