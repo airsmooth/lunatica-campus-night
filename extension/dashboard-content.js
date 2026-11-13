@@ -72,6 +72,7 @@
   }
   function request(type,payload={}) {
     const message={type};
+    if(type==='campus:xp')return readPage('/'+(location.pathname.match(/^\/(ru|kk|en)\b/)?.[1]||'ru')+'/trajectory',CampusXP.parseDocument);
     if(type==='campus:deadline')return loadDeadline(payload);
     if(type==='campus:courses')return readPage('/ru/courses',CampusData.courses);
     if (message?.type === 'campus:page') return Promise.resolve(CampusData.page(document, location.href));
