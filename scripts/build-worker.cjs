@@ -9,5 +9,5 @@ const grades=fs.readFileSync(path.join(root,'server/grades.mjs'),'utf8').replace
 // Separate module scopes avoid collisions with the existing XP implementation.
 const gradeModule='const {routeGrades,publishGrades}=(()=>{\n'+grades.replaceAll('export async function','async function')+'\nreturn {routeGrades,publishGrades};})();\n';
 fs.mkdirSync(path.join(root,'dist'),{recursive:true});
-fs.writeFileSync(path.join(root,'dist/worker.mjs'),xp+'\n'+gradeModel+'\n'+gradeModule+worker.slice(entry.length).replace("import {routeGrades,publishGrades} from './grades.mjs';",''));
+fs.writeFileSync(path.join(root,'dist/worker.mjs'),(xp+'\n'+gradeModel+'\n'+gradeModule+worker.slice(entry.length).replace("import {routeGrades,publishGrades} from './grades.mjs';",'')).replace(/\r\n/g,'\n'));
 console.log('Built Worker module');
