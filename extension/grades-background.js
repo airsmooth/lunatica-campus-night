@@ -16,8 +16,8 @@ globalThis.CampusGradesClient=(()=>{
   async function load(){if(!loaded)loaded=v.get().then(s=>state=s||null);await loaded;return state;}
   const save=()=>state?v.put(structuredClone(state)):v.clear();
   function source(s){if(s?.id!==b.runtime.id)return null;if(s.url===account)return 'account';try{if(new URL(s.url).origin==='https://campus.qairu.edu.kz'&&s.tab?.id!=null&&(!s.frameId||s.frameId===0))return 'campus';}catch{}return null;}
-  async function permissions(){const p=await b.permissions.getAll();if(Array.isArray(p.data_collection)&&!dataTypes.every(t=>p.data_collection.includes(t)))throw Error('Разрешите передачу данных на странице управления сравнением.');}
-  async function api(method,path,payload){await permissions();let r;try{r=await send(endpoint+path,{method,headers:{'Content-Type':'application/json',Authorization:'Bearer '+state.secret},...(payload?{body:JSON.stringify(payload)}:{}),credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',cache:'no-store',signal:AbortSignal.timeout(20000)});}catch{throw Error('Нет связи. Ключ сохранён; повторите действие позже.');}const result=await r.json();if(!r.ok)throw Object.assign(Error(result.error||'Сравнение недоступно.'),{status:r.status});return result;}
+  async function permissions(required=dataTypes){const p=await b.permissions.getAll();if(Array.isArray(p.data_collection)&&!required.every(t=>p.data_collection.includes(t)))throw Error('Разрешите передачу данных на странице управления сравнением.');}
+  async function api(method,path,payload){await permissions(method==='DELETE'?['authenticationInfo']:dataTypes);let r;try{r=await send(endpoint+path,{method,headers:{'Content-Type':'application/json',Authorization:'Bearer '+state.secret},...(payload?{body:JSON.stringify(payload)}:{}),credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',cache:'no-store',signal:AbortSignal.timeout(20000)});}catch{throw Error('Нет связи. Ключ сохранён; повторите действие позже.');}const result=await r.json();if(!r.ok)throw Object.assign(Error(result.error||'Сравнение недоступно.'),{status:r.status});return result;}
   async function collect(sender,period){
    let id=source(sender)==='campus'?sender.tab.id:null;
    if(id===null){const tabs=await b.tabs.query({url:'https://campus.qairu.edu.kz/*'});tabs.sort((a,b)=>Number(b.active)-Number(a.active));id=tabs[0]?.id;}
@@ -56,6 +56,7 @@ globalThis.CampusGradesClient=(()=>{
     return {period:preview.period,metrics:r.snapshot.metrics,issues:r.issues,gpaState:r.gpaState};
    }
    if(m.action==='pause'){if(state){state.status='paused';await save();}return publicState();}
+   if(m.action==='prepareDelete'){if(m.confirm!==true)throw Error('Подтвердите удаление.');return publicState();}
    if(m.action==='delete'){if(m.confirm!==true)throw Error('Подтвердите удаление.');return erase();}
    if(m.action==='export'){if(!state)throw Error('Ключ ещё не создан.');return {format:'qairu-space-grades-key',version:1,secret:state.secret,salt:state.salt,binding:state.binding,period:state.period};}
    if(['join','resume','changePeriod','import'].includes(m.action)){
@@ -64,15 +65,16 @@ globalThis.CampusGradesClient=(()=>{
     if(state?.status==='deleting')throw Error('Сначала завершите удаление записи.');
     if(m.action==='import'){
      const f=m.file;if(state||!f||f.format!=='qairu-space-grades-key'||f.version!==1||!/^g1_[a-f0-9]{64}$/.test(f.secret)||!/^([a-f0-9]{64})$/.test(f.salt)||!/^([a-f0-9]{64})$/.test(f.binding))throw Error('Некорректный файл или уже есть участие.');
-     G.period(f.period);const read=await collect(sender);if(read.snapshot.period!==f.period||await binding(read.identity,f.salt)!==f.binding)throw Error('Ключ относится к другому аккаунту или периоду.');
+     G.period(f.period);const read=await collect(sender);if(read.snapshot.period!==preview.period||await binding(read.identity,preview.salt)!==preview.binding)throw Error('Предпросмотр устарел. Прочитайте данные заново.');if(startEpoch!==epoch)throw Error('Действие остановлено.');if(read.snapshot.period!==f.period||await binding(read.identity,f.salt)!==f.binding)throw Error('Ключ относится к другому аккаунту или периоду.');
      state={secret:f.secret,salt:f.salt,binding:f.binding,period:f.period,revision:0,status:'paused',lastCheck:now()};await save();
-     const remote=await api('GET','member');if(remote.period!==f.period)throw Error('На сервере выбран другой период. Используйте свежий файл ключа.');
+     const remote=await api('GET','member');if(startEpoch!==epoch)return publicState();if(remote.period!==f.period)throw Error('На сервере выбран другой период. Используйте свежий файл ключа.');
      state.revision=remote.revision;state.digest=remote.digest;state.status='active';await save();return upload(read,startEpoch);
     }
     if(!state){if(m.action!=='join')throw Error('Сначала присоединитесь.');state={secret:'g1_'+random(),salt:preview.salt,binding:preview.binding,period:preview.period,revision:0,status:'pending',consent:G.consentVersion};await save();}
     const read=await checked(sender,m.action==='changePeriod');
     if(read.snapshot.period!==preview.period||await binding(read.identity,preview.salt)!==preview.binding)throw Error('Предпросмотр устарел. Прочитайте данные заново.');
-    if(m.action==='resume') {const remote=await api('GET','member');state.revision=remote.revision;state.digest=remote.digest;state.status='active';}
+    if(startEpoch!==epoch)return publicState();
+    if(m.action==='resume') {const remote=await api('GET','member');if(startEpoch!==epoch)return publicState();state.revision=remote.revision;state.digest=remote.digest;state.status='active';}
     else if(state.status==='paused')state.status='active';
     state.lastCheck=now();await save();return upload(read,startEpoch);
    }
@@ -92,8 +94,8 @@ globalThis.CampusGradesClient=(()=>{
   }
   function handle(m,sender){
    const type=source(sender);let stop=Promise.resolve();
-   if(type==='account'&&(m.action==='pause'||m.action==='delete'&&m.confirm===true)){
-    epoch++;stop=load().then(async()=>{if(state){state.status=m.action==='delete'?'deleting':'paused';await save();}});
+   if(type==='account'&&(m.action==='pause'||['delete','prepareDelete'].includes(m.action)&&m.confirm===true)){
+    epoch++;stop=load().then(async()=>{if(state){state.status=m.action==='pause'?'paused':'deleting';await save();}});
    }
    const startEpoch=epoch,operation=queue.then(()=>stop).then(()=>run(m,sender,startEpoch)).catch(async e=>{if(state){state.error=e.message;await save();}return {error:e.message,status:e.status||0};});queue=operation.then(()=>{});return operation;
   }

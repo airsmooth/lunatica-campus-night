@@ -21,3 +21,13 @@ Node 22.23.2; `npm ci`, `npm test`, `npm run build`, `node scripts/build-worker.
 ## Release status
 
 Implementation in progress. Store submission, live service checks and final review must be recorded here before claiming release. Existing 2.0 store status is historical and does not imply 2.1 approval.
+
+## Verification and review
+
+53 tests pass after an independent whole-branch review. Four Important findings were reproduced failing and fixed: imported period/account must match the consent preview; resume/import cannot overwrite a durable pause/deletion; missing GPA markup cannot remove prior contributions; Firefox deletion can request only key-transmission permission without renewing upload consent, preserving pending deletion even when declined. No Critical or deferred Minor findings were reported.
+
+A further production-limit test reproduced excessive D1 queries for thirty metrics. Daily pruning, consistent reads and guarded publication now use three batches, with chunks of 1,000 results per bound JSON value. A concurrent deletion regression proves stale computed snapshots cannot be published. Publication refuses a truncated population above 100,000 active participant-metric rows; this is a beta capacity limit, not partial ranking.
+
+Both browser builds pass; Firefox lint reports zero errors/warnings. Synthetic browser views checked desktop and 390px widths, unchanged native score text, disclosures, unchecked initial consent and local preview. No real grades were enrolled. These previews do not verify native Firefox installation or every live React/theme variant.
+
+Review rulings: deployment/cron, public policy and both store submissions are separate operational checks below, not inferred from tests. Live source coverage is limited to verified Russian DOM and supported identities; other structures fail closed. Formal anonymity/anti-fabrication guarantees are outside this beta; copy states those limits. Deletion conservatively does not count as one of five changed remaining participants, which can delay a fresh snapshot. Retired-key hashes prevent delayed resurrection and are disclosed; they contain no grade values. The managed worktree is retained rather than removed outside the tool that owns it.

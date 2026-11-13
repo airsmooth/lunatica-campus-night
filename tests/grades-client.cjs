@@ -39,3 +39,17 @@ test('pause during lost-response recovery cannot be overwritten by a late succes
  const s=setup();await s.preview();s.drop(true);assert.ok((await s.join()).error);s.drop(false);
  let release;s.gate(new Promise(r=>release=r));await s.preview();const prior=s.calls.length;const joining=s.join();for(let spin=0;s.calls.length===prior&&spin<1000;spin++)await new Promise(setImmediate);assert.ok(s.calls.length>prior);const pausing=s.act('pause');await new Promise(setImmediate);assert.equal(s.get().status,'paused');release();const recovered=await joining;assert.equal(recovered.status,'paused',recovered.error);await pausing;assert.equal(s.get().status,'paused');
 });
+test('import must match the displayed preview as well as the key before any service request',async()=>{
+ const s=setup();s.period('2026-2027~2');await s.preview();await s.join();const file=await s.act('export');await s.vault.clear();s.restart();
+ s.period('2026-2027~1');await s.preview();s.period('2026-2027~2');const n=s.calls.length;const r=await s.act('import',{file,consent:true});assert.ok(r.error);assert.equal(s.calls.length,n);assert.equal(s.get(),null);
+});
+test('resume and import cannot persist active over pause or deletion while their lookup is in flight',async()=>{
+ for(const action of ['resume','import'])for(const stop of ['pause','delete']){
+  const s=setup();await s.preview();await s.join();const file=await s.act('export');
+  if(action==='import'){await s.vault.clear();s.restart();}else await s.act('pause');
+  await s.preview();let release;s.gate(new Promise(r=>release=r));const writes=[],original=s.vault.put;s.vault.put=async v=>{writes.push(v.status);return original(v);};
+  const n=s.calls.length,operation=s.act(action,{consent:true,file});for(let i=0;s.calls.length===n&&i<1000;i++)await new Promise(setImmediate);assert.ok(s.calls.length>n);
+  const stopped=s.act(stop,{confirm:true});await new Promise(setImmediate);const boundary=writes.length;assert.equal(s.get().status,stop==='pause'?'paused':'deleting');release();await operation;await stopped;
+  assert.ok(!writes.slice(boundary).includes('active'),action+' overwrote '+stop);s.restart();assert.equal((await s.act('state')).status,stop==='pause'?'paused':'off');
+ }
+});

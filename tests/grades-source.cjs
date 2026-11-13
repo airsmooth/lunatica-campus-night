@@ -16,3 +16,7 @@ test('duplicate attempts, partial filters and missing identity fail closed',()=>
  const p=new JSDOM('<h1>Профиль</h1><dl><div><dt>Корпоративная почта</dt><dd>student@example.qairu.edu.kz</dd></div><div><dt>ИИН</dt><dd>never-read</dd></div></dl>').window.document;
  assert.equal(S.identity(p),'student@example.qairu.edu.kz');p.querySelector('dd').textContent='';assert.throws(()=>S.identity(p));
 });
+test('absent or unfinished GPA markup cannot produce a complete replacement snapshot',()=>{
+ const absent=doc({gpa:'3,5'});absent.querySelector('.qui-stattile__value').remove();assert.throws(()=>S.parse(absent));
+ assert.throws(()=>S.parse(doc({gpa:''})));assert.equal(S.parse(doc({gpa:'—'})).gpaState,'missing');
+});

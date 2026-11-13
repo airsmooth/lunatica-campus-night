@@ -49,7 +49,8 @@ globalThis.CampusGradesSource=(()=>{
   const tiles=[...doc.querySelectorAll('.qui-stattile')].filter(n=>text(n.querySelector('.qui-stattile__label'))==='Средний балл (GPA)');
   if(tiles.length!==1)fail();
   const gpaNode=tiles[0].querySelector('.qui-stattile__value'),raw=text(gpaNode);let gpaState='missing';
-  if(raw!=='—'&&raw!==''){const value=G.number(raw);if(value===null)fail();add({kind:'gpa',course:'',work:'',value,max:4,status:'closed'},gpaNode);gpaState='available';}
+  if(!gpaNode||!raw)fail();
+  if(raw!=='—'){const value=G.number(raw);if(value===null)fail();add({kind:'gpa',course:'',work:'',value,max:4,status:'closed'},gpaNode);gpaState='available';}
   return {snapshot:G.validateSnapshot({period,complete:true,metrics}),anchors,issues,gpaState};
  }
  return {parse,identity};

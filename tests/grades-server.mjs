@@ -4,7 +4,7 @@ import {DatabaseSync} from 'node:sqlite';
 import fs from 'node:fs';
 import {routeGrades,publishGrades} from '../server/grades.mjs';
 const day=86400000,start=Date.UTC(2026,10,13),token=i=>'g1_'+i.toString(16).padStart(64,'0');
-function setup(){const db=new DatabaseSync(':memory:');db.exec(fs.readFileSync('server/grades-schema.sql','utf8'));const DB={prepare(sql){let params=[];const s={bind(...p){params=p;return s},async first(){return db.prepare(sql).get(...params)||null},async all(){return {results:db.prepare(sql).all(...params)}},async run(){return {meta:db.prepare(sql).run(...params)}}};return s},async batch(statements){db.exec('BEGIN');try{const result=[];for(const s of statements)result.push(await s.all());db.exec('COMMIT');return result}catch(e){db.exec('ROLLBACK');throw e}}};return {db,DB,RATE:{limit:async()=>({success:true})}};}
+function setup(){const db=new DatabaseSync(':memory:');db.exec(fs.readFileSync('server/grades-schema.sql','utf8'));const DB={prepare(sql){let params=[];const s={sql,bind(...p){params=p;return s},async first(){return db.prepare(sql).get(...params)||null},async all(){return {results:db.prepare(sql).all(...params)}},async run(){return {meta:db.prepare(sql).run(...params)}}};return s},async batch(statements){db.exec('BEGIN');try{const result=[];for(const s of statements)result.push(await s.all());db.exec('COMMIT');return result}catch(e){db.exec('ROLLBACK');throw e}}};return {db,DB,RATE:{limit:async()=>({success:true})}};}
 const snapshot=(value=80,period='2026-2027~1')=>({period,complete:true,metrics:[{kind:'course',course:'TST999',work:'',value,max:100,status:'current'}]});
 async function req(e,method,path='member',i=1,body,now=start){return routeGrades(new Request('https://test.local/v2/grades/'+path,{method,headers:{Authorization:'Bearer '+token(i),'Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})}),e,now);}
 const put=(e,i,value=80,revision=0,now=start,period='2026-2027~1',mutation=crypto.randomUUID())=>req(e,'PUT','member',i,{snapshot:snapshot(value,period),consent:'grades-2026-11-v1',revision,mutation},now);
@@ -50,4 +50,19 @@ test('validation, consent, separate token and fail-closed rate gate',async()=>{
  assert.equal((await req(e,'PUT','member',1,{snapshot:{...snapshot(),email:'private'},consent:'grades-2026-11-v1',revision:0,mutation:crypto.randomUUID()})).status,400);
  assert.equal((await routeGrades(new Request('https://test.local/v2/grades/member',{headers:{Authorization:'Bearer '+'a'.repeat(64)}}),e,start)).status,401);
  e.RATE.limit=async()=>({success:false});assert.equal((await put(e,1)).status,429);e.db.close();
+});
+test('daily publication of a normal multi-course cohort fits the Free D1 invocation query limit',async()=>{
+ const e=setup();for(let i=1;i<=20;i++){
+  const s=snapshot();s.metrics=Array.from({length:30},(_,j)=>({...s.metrics[0],course:'TST'+j}));
+  assert.equal((await req(e,'PUT','member',i,{snapshot:s,consent:'grades-2026-11-v1',revision:0,mutation:crypto.randomUUID()})).status,200);
+ }
+ let queries=0,inBatch=false;const originalPrepare=e.DB.prepare.bind(e.DB),originalBatch=e.DB.batch.bind(e.DB);
+ e.DB.prepare=sql=>{const s=originalPrepare(sql);for(const method of ['all','first','run']){const fn=s[method].bind(s);s[method]=async()=>{if(!inBatch&&++queries>50)throw Error('Free D1 query limit');return fn();};}return s;};
+ e.DB.batch=async statements=>{if(++queries>50)throw Error('Free D1 query limit');inBatch=true;try{return await originalBatch(statements);}finally{inBatch=false;}};
+ await publishGrades(e,start);assert.equal((await results(e)).results.length,30);e.db.close();
+});
+test('deletion concurrent with computed publication cannot republish the deleted contribution',async()=>{
+ const e=setup();for(let i=1;i<=20;i++)await put(e,i);let release,entered;const enteredPromise=new Promise(r=>entered=r),gate=new Promise(r=>release=r),original=e.DB.batch.bind(e.DB);let once=true;
+ e.DB.batch=async statements=>{if(once&&statements.some(s=>s.sql.startsWith('INSERT INTO grades_results'))){once=false;entered();await gate;}return original(statements);};
+ const publishing=publishGrades(e,start);await enteredPromise;await req(e,'DELETE','member',20);release();await publishing;assert.deepEqual((await results(e)).results,[]);assert.equal(e.db.prepare('SELECT count(*) n FROM grades_members').get().n,19);e.db.close();
 });

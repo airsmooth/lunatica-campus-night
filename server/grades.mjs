@@ -92,25 +92,47 @@ export async function routeGrades(request,env,now=Date.now()){
  }catch(e){return json({error:e.status?e.message:'Сравнение временно недоступно.'},e.status||503);}
 }
 export async function publishGrades(env,now=Date.now()){
- const expired=await all(env,'SELECT token FROM grades_members WHERE last_seen<=?',now-TTL);
- for(const m of expired)await remove(env,m.token,now);
- const scopes=await all(env,'SELECT DISTINCT scope FROM grades_metrics');
- for(const {scope} of scopes){
-  const {generation}=await stmt(env,'SELECT generation FROM grades_state WHERE id=1').first();
-  const old=await stmt(env,'SELECT * FROM grades_snapshots WHERE scope=?',scope).first();
+ // One transaction prunes every expired contribution. Batches count as one D1 invocation query.
+ const cutoff=now-TTL,expired='SELECT token FROM grades_members WHERE last_seen<=?';
+ const expiredScopes=`SELECT scope FROM grades_metrics WHERE token IN(${expired})`;
+ await env.DB.batch([
+  stmt(env,'UPDATE grades_state SET generation=generation+1,nonce=? WHERE id=1',crypto.randomUUID()),
+  stmt(env,`UPDATE grades_snapshots SET valid=0 WHERE scope IN(${expiredScopes})`,cutoff),
+  stmt(env,`DELETE FROM grades_results WHERE scope IN(${expiredScopes})`,cutoff),
+  stmt(env,`DELETE FROM grades_changes WHERE token IN(${expired})`,cutoff),
+  stmt(env,`DELETE FROM grades_metrics WHERE token IN(${expired})`,cutoff),
+  stmt(env,'INSERT OR IGNORE INTO grades_retired(token,retired) SELECT token,? FROM grades_members WHERE last_seen<=?',now,cutoff),
+  stmt(env,'DELETE FROM grades_members WHERE last_seen<=?',cutoff)
+ ]);
+ const snapshot=await env.DB.batch([
+  stmt(env,'SELECT generation FROM grades_state WHERE id=1'),
+  stmt(env,'SELECT m.scope,m.token,m.fingerprint,m.value FROM grades_metrics m JOIN grades_members a ON a.token=m.token WHERE a.last_seen>? ORDER BY m.scope,m.value DESC LIMIT 100001',cutoff),
+  stmt(env,'SELECT * FROM grades_snapshots'),
+  stmt(env,'SELECT scope,count(*) n FROM grades_changes GROUP BY scope')
+ ]);
+ // Bound working memory. Never publish a truncated population as a complete comparison.
+ if(snapshot[1].results.length>100000)throw Error('Grade publication capacity exceeded');
+ const generation=snapshot[0].results[0].generation,groups=new Map(),oldSnapshots=new Map(snapshot[2].results.map(r=>[r.scope,r])),changes=new Map(snapshot[3].results.map(r=>[r.scope,r.n]));
+ for(const row of snapshot[1].results){if(!groups.has(row.scope))groups.set(row.scope,[]);groups.get(row.scope).push(row);}
+ const ready=[];
+ for(const [scope,members] of groups){
+  const old=oldSnapshots.get(scope);
   if(old&&Math.floor(old.published/DAY)>=Math.floor(now/DAY))continue;
-  const changes=await stmt(env,'SELECT count(*) n FROM grades_changes WHERE scope=?',scope).first();
-  if(old&&changes.n<5)continue;
-  const members=await all(env,'SELECT m.token,m.fingerprint,m.value FROM grades_metrics m JOIN grades_members a ON a.token=m.token WHERE m.scope=? AND a.last_seen>? ORDER BY m.value DESC',scope,now-TTL);
+  if(old&&(changes.get(scope)||0)<5)continue;
   if(members.length<20)continue;
-  // Each result row is private and contains only a coarse interval, never a distribution.
   const scores=new Map();for(let i=0;i<members.length;i++){const v=members[i].value;if(!scores.has(v))scores.set(v,{h:i,e:0});scores.get(v).e++;}
-  const data=JSON.stringify(members.map(m=>{const {h,e}=scores.get(m.value);return {token:m.token,fingerprint:m.fingerprint,result:JSON.stringify(G.range(members.length,h,e))};}));
-  await commit(env,generation,add=>{
+  const chunks=[];
+  for(let start=0;start<members.length;start+=1000)chunks.push(JSON.stringify(members.slice(start,start+1000).map(m=>{const {h,e}=scores.get(m.value);return {token:m.token,fingerprint:m.fingerprint,result:JSON.stringify(G.range(members.length,h,e))};})));
+  ready.push({scope,chunks});
+ }
+ if(!ready.length)return;
+ // A single generation-guarded batch publishes all computed cohorts, or none if a mutation won.
+ await commit(env,generation,add=>{
+  for(const {scope,chunks} of ready){
    add('DELETE FROM grades_results WHERE scope=? AND $guard',scope);
-   add(`INSERT INTO grades_results(scope,token,fingerprint,result) SELECT ?,json_extract(value,'$.token'),json_extract(value,'$.fingerprint'),json_extract(value,'$.result') FROM json_each(?) WHERE $guard`,scope,data);
+   for(const data of chunks)add(`INSERT INTO grades_results(scope,token,fingerprint,result) SELECT ?,json_extract(value,'$.token'),json_extract(value,'$.fingerprint'),json_extract(value,'$.result') FROM json_each(?) WHERE $guard`,scope,data);
    add('INSERT INTO grades_snapshots(scope,published,valid) SELECT ?,?,1 WHERE $guard ON CONFLICT(scope) DO UPDATE SET published=excluded.published,valid=1',scope,now);
    add('DELETE FROM grades_changes WHERE scope=? AND $guard',scope);
-  });
- }
+  }
+ });
 }
