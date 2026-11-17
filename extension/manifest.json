@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Qairu Space",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "author": "wateroff, airsmooth",
   "description": "Тема Lunatica, экзамены, дедлайны, заметки, добровольный рейтинг XP и приватное сравнение оценок QAIRU.",
   "permissions": [
@@ -68,6 +68,7 @@
         "settings.js",
         "lunatica-theme.js",
         "content.js",
+        "course-page-size.js",
         "campus-data.js",
         "xp.js",
         "exam-data.js",

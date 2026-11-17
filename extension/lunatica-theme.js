@@ -231,7 +231,15 @@ globalThis.CampusSpaceTheme=(()=>{
   }
 
 
-    return themeCSS()+'html:root{--cmp-ink-700:'+P.ink2+';}';
+    // New campus components own local tokens, so root tokens alone cannot theme them.
+    const campusFixes='html:root{--cmp-ink-700:'+P.ink2+';}'+
+      'html:root .qan{--qan-accent:'+P.focus+';--qan-ink:'+P.link+';--qan-soft:'+P.azure+';--qan-pick:'+P.navPill+';'+
+      '--qan-navy:'+P.ink+';--qan-navy-bg:'+P.sunk+';--qan-course-bg:'+P.azure+';--qan-course-ink:'+P.link+';'+
+      '--qan-blue-bg:'+P.azure+';--qan-blue-ink:'+P.link+';--qan-red:#ffada4;--qan-red-soft:#321e20;--qan-important-line:#6b4140;'+
+      '--qan-green-bg:#0e2419;--qan-green-ink:#83ddb5;--qan-amber-soft:#261d0e;--qan-amber-text:#e9b45a;'+
+      '--qan-teal-50:#102b28;--qan-teal-ink:#83d8cc;--qan-seg:'+P.sunk+';--qan-skeleton:'+P.sunk+';--qan-scrim:'+P.backdrop+';}'+
+      'html:root .button.button--dark{--button-bg:'+P.navPill+';--button-bg-hover:#24446d;--button-bg-pressed:#24446d;--button-fg:'+P.ink+';--tw-ring-color:'+P.focus+';}';
+    return themeCSS()+campusFixes;
   }
   return {css,mapDecl};
 })();
